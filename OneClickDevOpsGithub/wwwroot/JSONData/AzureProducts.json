@@ -1,0 +1,30 @@
+[
+  {
+    "ProductName": "Virtual Machine",
+    "ImageSrc": "/AzureIcons/VM-icon.png",
+    "Description": "Provision Windows and Linux virtual machines in seconds",
+    "Details": "1 D2 v3 (2 vCPUs, 8 GB RAM) x 730 Hours (Pay as you go), Windows (License included), OS Only; 0 managed disks – S4, 100 transaction units; Inter Region transfer type, 5 GB outbound data transfer from West US to East Asia",
+    "UnitPrice": "152.57"
+  },
+  {
+    "ProductName": "App Service",
+    "ImageSrc": "/AzureIcons/App-Service-icon.png",
+    "Description": "Provision Windows and Linux virtual machines in seconds",
+    "Details": "Basic Tier; 1 B1 (1 Core(s), 1.75 GB RAM, 10 GB Storage) x 730 Hours; Windows OS",
+    "UnitPrice": "54.75"
+  },
+  {
+    "ProductName": "Active Directory",
+    "ImageSrc": "/AzureIcons/active-directory.png",
+    "Description": "Includes 500K Directory Objects, SSO for SaaS Apps 10 Apps/User,",
+    "Details": "1 users Premium P1, 1 users Premium P2, Enterprise tier, 730 directory objects, User forest hours {5, Resource forest hours {7}.",
+    "UnitPrice": "23.36"
+  },
+  {
+    "ProductName": "Azure SQL Database",
+    "ImageSrc": "/AzureIcons/sql-database-generic.png",
+    "Description": "Includes 500K Directory Objects, SSO for SaaS Apps 10 Apps/User,",
+    "Details": "Single Database, vCore, RA-GRS Backup Storage, General Purpose, Provisioned, Standard-series (Gen 5), Local Redundancy, 1 - 8 vCore instance(s) x 730 Hours, 32 GB Storage, 0 GB Backup Storage",
+    "UnitPrice": "23.36"
+  }
+]

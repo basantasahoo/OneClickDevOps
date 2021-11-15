@@ -9,27 +9,28 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OneClickDevOpsGithub</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" style="display:inherit;text-align:center;">
+            <div>
+                <h1>WelCome to OneCloud Transformer</h1>
+                <p class="headerMessage">( One click solution for Azure DevOps, Cloud Economics and Cloud AI )</p>
+            </div>
+
+            <div class="divMainSection" style="margin-left:27%; margin-bottom:10px; margin-top:-10px;">
+                <div class="divAzureDevOps divChildSections" title="One Click Agile DevOps model delivery including development, security & Deployment ">
+                    <span class="spanTopMenu">
+                        <a asp-area="" asp-controller="DevOps" asp-action="DevOpsBoard">Azure DevOps </a>
+                    </span>
                 </div>
+                <div class="divCloudEconomics divChildSections" title="One click pre-estimate of Cloud Resource cost and IT need including Capex & Opex.">
+                    <span class="spanTopMenu">
+                        <a asp-area="" asp-controller="Pricing" asp-action="ProductList">Cloud Economics </a>
+                    </span>
+                </div>
+                <div class="divCloudAI divChildSections" title="One click AI based resilient Application deployment with high availability & performance "> <span> Cloud AI </span></div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container" style="margin-left:5%; margin-right:5%; max-width:85%">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

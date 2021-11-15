@@ -1,0 +1,571 @@
+﻿
+@{
+    Layout = "_Layout";
+}
+
+<div class="text-center">
+    @*<h1 class="display-4">Welcome to Azure DevOps DashBoard</h1>*@
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+@*<script src="js/site.js" asp-append-version="true"></script>*@
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        // Set Org & PAT
+        sessionStorage.setItem('org', $("#txtOrg").val());
+        sessionStorage.setItem('pat', $("#txtpat").val());
+
+        $(".loadingdiv").hide();
+        // SetBackColor for TopMenu
+        $(".divAzureDevOps").addClass("selectedTopMenu");
+        $(".divAzureDevOps span a").addClass("selectedTopMenu");
+
+        // Check if use already loggedin
+        if (sessionStorage.getItem("devOpsLogin") == "True") {
+
+            // Hide Login
+            $(".connect").hide();
+            // $(".loadingdiv").show();
+            // Load ProductList
+            ProjectList();
+        }
+        else {
+            $(".connect").show();
+        }
+
+        //Hide Cloud Economy Button
+        $(".divGotoCloudEconomy").hide();
+
+
+        $("#divProjectList").hide();
+        $(".process").hide();
+        $(".divoption").hide();
+        $(".newproject").hide();
+        $(".nextsection").hide();
+        $("#divExistingProjectList").hide();
+        $(".divresult").hide();
+        $("#btnprocess").prop('disabled', true);
+        $(".divprojectcreationoptionmain").hide();
+        $(".divAddWorkItems").hide();
+        $(".divSectionExistingWorkItems").hide();
+
+
+        function GetToken() {
+            jQuery.ajax({
+                url: "https://localhost:44346/api/v1/GetToken",
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+                    $(".divtoken").html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
+        function GetWorkItemList(projectName) {
+            $("#divSectionExistingWorkItems").hide();
+            var org = $("#txtOrg").val();
+            var pat = $("#txtpat").val();
+            var url = "https://localhost:44346/api/v1/GetWorkItemList?org=" + org + "&pat1=" + pat + "&projectName=" + projectName;
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+                    //$(".divtoken").html(result);
+                    if (result.length >= 0) {
+
+                        // Display the Project List in Table
+                        $("#divSectionExistingWorkItems").show();
+                        $('#tblexistingWorkItems').html('');
+
+                        $(".divSectionExistingWorkItems").show();
+
+                        var headerrow = "<tr style='background-color: lightgray;'>" +
+                            "<td>Id  </td>" +
+                            "<td> Title</td>" +
+                            "<td> Type</td>" +
+                            "<td> Status</td>" +
+                            "</tr>";
+                        $('#tblexistingWorkItems').append(headerrow);
+
+                        for (var i = 0; i < result.length; i++) {
+
+                            var linkUrl = "https://dev.azure.com/Benefactor-Clairvoyant/" + projectName + "/_workitems/edit/" + result[i].id;
+                            var datarow = "<tr>" +
+                                "<td> " + result[i].id + "</td > " +
+                                "<td> <a href=" + linkUrl + " target='_blank'> " + result[i].fields.title + " </a></td > " +
+                                "<td> " + result[i].fields.workItemType + "</td > " +
+                                "<td> " + result[i].fields.state + "</td > " +
+                                "</tr>";
+                            $('#tblexistingWorkItems').append(datarow);
+                        }
+
+                    }
+                    // $(".divstatus").append('<br> Project List received !');
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
+        function ProjectList() {
+            $(".loadingdiv").show();
+            var org = $("#txtOrg").val();
+            var pat = $("#txtpat").val();
+            var url = "https://localhost:44346/api/v1/GetProjectList?org=" + org + "&pat1=" + pat;
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+                    $(".loadingdiv").hide();
+                    //$(".divtoken").html(result);
+                    if (result.azprojectList.length >= 0) {
+
+                        // Display the Project List in Table
+                        $("#divExistingProjectList").show();
+                        $('#tblexistingProjects').html('');
+                        $("#btnprocess").val('Add Pipeline');
+
+                        $(".divprojectcreationoptionmain").show();
+
+                        var headerrow = "<tr style='background-color: lightgray;'>" +
+                            "<td>  </td>" +
+                            "<td> Project Name</td>" +
+                            "<td> URL</td>" +
+                            "<td> Pipeline</td>" +
+                            "</tr>";
+                        $('#tblexistingProjects').append(headerrow);
+
+
+                        $(".getproject").hide();
+                        $(".process").show();
+                        $(".divoption").show();
+                        $("#ddlprojectList").empty();
+                        for (var i = 0; i < result.azprojectList.length; i++) {
+                            var spanshow = result.azprojectList[i].azPipelineList.length > 0 ? "span-shown" : "span-show";
+                            var datarow = "<tr>" +
+                                "<td> <span class='" + spanshow +
+                                " span-select'>" +
+                                "<input type='button' class='btnselectproject  btn-blue' data=" + result.azprojectList[i].id + " value='Select' /></span></td > " +
+                                "<td> " + result.azprojectList[i].name + "</td>" +
+                                "<td> " + result.azprojectList[i].url + "</td>" +
+                                "<td> " + result.azprojectList[i].azPipelineList.length + "</td>" +
+                                "</tr>";
+                            $('#tblexistingProjects').append(datarow);
+                        }
+                        $("input[name=projectoption][value='0']").prop("checked", true);
+                        $(".connect").hide();
+                        registerbuttonEvent();
+                        //checkprojectoption();
+                        checkProcessButton();
+
+                        //Clear project selection
+                        sessionStorage.setItem('currentSelectedProject', '');
+                    }
+                    // $(".divstatus").append('<br> Project List received !');
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
+        function CreateProject() {
+            var existingProject = $('input[name="projectoption"]:checked').val() == "0";
+            var org = $("#txtOrg").val();
+            var pat = $("#txtpat").val();
+            var projectName = $("#txtnewProject").val();
+            var desc = 'CreateNewProject';
+            var projectType = $("#dlltechnology option:selected").val();
+
+            // Send Work Item List
+            var workItemList = [{}];
+
+            $('.divWorkItemRow').each(function () {
+                if ($(this).find("div > textarea").val().trim().length > 0) {
+                    workItemList.push({ 'title': $(this).find("div > textarea").val(), 'type': $(this).find("div > select").val() });
+                }
+            });
+            workItemList = workItemList.splice(1);
+            var url = "https://localhost:44346/api/v1/CreateProject?projectName=" + projectName + "&description=" + desc + "&org=" + org + "&pat1=" + pat + "&type=" + projectType + "&isexist=" + existingProject + "&numberOfTask=" + workItemList.length;
+
+            $(".projectcreationmessage").html('<br> Project creation, yaml upload and pipeline is in progress...');
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+                    if (result.length > 0 && result.toString().indexOf('Error') > 0) {
+                        console.log(result);
+                    }
+                    $(".projectcreationmessage").html('');
+                    $(".newsectionmessage").html('');
+                    $(".divresult").show();
+                    $("#divExistingProjectList").hide();
+                    $(".divprojectcreationoptionmain").hide();
+                    $(".divAddWorkItems").hide();
+                    $(".newsectionmessage").append('New Project ' + projectName + '   Created Successfully....<br> Project Link:-  ' + result);
+                    $(".newsectionmessage").append("<br>Pipeline also created for the project " + projectName);
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
+        function DeleteProject() {
+            var org = $("#txtOrg").val();
+            var pat = $("#txtpat").val();
+            var projectName = $("#txtdelProject").val();
+            var url = "https://localhost:44346/api/v1/DeleteProject?projectName=" + projectName + "&org=" + org + "&pat1=" + pat;;
+
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+                    $(".divstatus").append(result);
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
+        function checkprojectoption() {
+            var optionval = $('input[name="projectoption"]:checked').val();
+            if (optionval == "0") {
+                // Show Existing Section
+                $(".span-select").addClass("span-show");
+                $(".span-select").removeClass("span-hidden");
+                $(".divpipelinecaption").html('Create Pipeline from Existing Project');
+                $("#txtnewProject").prop('disabled', true);
+                $("#txtnewProject").val('');
+                $(".divAddWorkItems").hide();
+                // $(".divSectionExistingWorkItems").show();
+                // Change the button Caption to Add Pipeline
+                $("#btnprocess").val('Add Pipeline');
+            }
+            if (optionval == "1") {
+                // Show Create New Project Seaction
+                $(".span-select").removeClass("span-show");
+                $(".span-select").addClass("span-hidden");
+                $(".divpipelinecaption").html('Create Pipeline with New Project');
+                $("#txtnewProject").prop('disabled', false);
+                $("#txtnewProject").val('');
+                $(".divAddWorkItems").show();
+                addDefaultWorkItems();
+                $(".divSectionExistingWorkItems").hide();
+
+                // Change the button Caption to Process
+                $("#btnprocess").val('Process');
+            }
+        }
+
+        $('input[type=radio][name=projectoption]').change(function () {
+            checkprojectoption();
+            checkProcessButton();
+        });
+
+
+        function registerbuttonEvent() {
+            $(".btnselectproject").click(function () {
+                // alert($(this).attr("data"));
+                $("#txtnewProject").val($(this).attr("data"));
+                // Get WorkItem details as per Project Name
+                var projectName = $(this).closest('td').next('td').text().trim();
+
+                GetWorkItemList(projectName);
+
+                checkProcessButton();
+
+                // Add row highlighted on Select
+                // Remove selected highlighted from all rows
+                // Add selected hightlight for self
+                $(".btnselectproject").closest("tr").removeClass('selectedTopMenu');
+                $(this).closest("tr").addClass('selectedTopMenu');
+
+                //Show WorkItem
+                $(".divGotoCloudEconomy").show();
+
+                sessionStorage.setItem('currentSelectedProject', projectName);
+
+            });
+        }
+
+        $(".getproject").click(function (e) {
+            //GetToken();
+            ProjectList();
+
+            //Put into Sesion Storage
+            sessionStorage.setItem("devOpsLogin", "True");
+        });
+
+        $(".showList").click(function (e) {
+            //Hide result Section Message
+            $(".divresult").hide();
+            //clear projectname text box
+            $("#txtnewProject").val('');
+            ProjectList();
+        });
+
+        $("#txtnewProject").keyup(function () {
+            checkProcessButton();
+
+        });
+        function checkProcessButton() {
+            var isvalid = $("#txtnewProject").val().length > 0;
+            if (isvalid) {
+                $("#btnprocess").prop('disabled', false);
+                $("#btnprocess").removeClass('disablebutton');
+                $("#btnprocess").addClass('btn-blue');
+            }
+            else {
+                $("#btnprocess").prop('disabled', true);
+                $("#btnprocess").addClass('disablebutton');
+                $("#btnprocess").removeClass('btn-blue');
+            }
+        }
+
+        $("#ddlprojectList").change(function () {
+
+            var selectedVal = $(this).find(':selected').val();
+            var selectedText = $(this).find(':selected').text();
+
+            $(".divstatus").html('<br> You have sclected ' + selectedText);
+
+        });
+
+        $(".process").click(function (e) {
+            CreateProject();
+        });
+
+        $(".delete").click(function (e) {
+            DeleteProject();
+        });
+
+        function addDefaultWorkItems() {
+            // If its First Task, then Add Below.
+            if ($(".divWorkItemRow").length == 1) {
+                $(".divWorkItemRow:last .txtTaskTtile").val('Create Resources for the Project');
+            }
+        }
+
+        // Add new work Item
+        $(".addworkitem").click(function (e) {
+
+            if ($(".divWorkItemRow").length < 4) {
+                //Clone the row Item
+                var t = $(".divWorkItemRow:last").clone()
+                $(t).insertAfter(".divWorkItemRow:last");
+
+                // Clear the Text Area for the recent added
+                $(".divWorkItemRow:last .txtTaskTtile").val('');
+                $(".divWorkItemRow:last #ddlTaskType").val("0")
+
+
+                if ($(".divWorkItemRow").length == 2) {
+                    $(".divWorkItemRow:last .txtTaskTtile").val('Create Economics for the Project');
+                }
+
+                if ($(".divWorkItemRow").length == 3) {
+                    $(".divWorkItemRow:last .txtTaskTtile").val('Develop application as per Project');
+                }
+
+                if ($(".divWorkItemRow").length == 4) {
+                    $(".divWorkItemRow:last .txtTaskTtile").val('Create CI /CD for the Application');
+                }
+
+                // Register the delete event
+                $(".delworkitemrow").click(function (e) {
+
+                    $(this).closest(".divWorkItemRow").remove();
+
+                    // If there is only row then no need show the delete button.
+                    if ($(".divWorkItemRow").length == 1) {
+                        // Hide the Delete button for all.
+                        $(".divWorkItemRow .delworkitemrow").hide();
+                    }
+                    else {
+                        // Show the Delete button for last item
+                        $(".divWorkItemRow:last .delworkitemrow").show();
+                    }
+                });
+
+                // If there is only one row then no need show the delete button.
+                if ($(".divWorkItemRow").length > 1) {
+                    // Hide the Delete button for all.
+                    $(".divWorkItemRow .delworkitemrow").hide();
+
+                    // Show the Delete button for last item
+                    $(".divWorkItemRow:last .delworkitemrow").show();
+                }
+            }
+        });
+
+        // If there is only row then no need show the delete button.
+        if ($(".divWorkItemRow").length == 1) {
+            // Hide the Delete button for all.
+            $(".divWorkItemRow .delworkitemrow").hide()
+        }
+
+    });
+</script>
+
+<script type="text/javascript">
+    ShowModelPopUp = function () {
+        var left = (screen.width);
+        var top = (screen.height);
+        window.open('/Pricing/Products', "WindowPopup", 'width=' + (screen.width) * 35 / 40 + ',height=400px, top= 100px, left = 100px');
+    }
+</script>
+
+<br />
+<div class="headerinfo">
+    <div class="connect">
+        <div class="projectdivsection">
+            <div class="row-header"> Connect to Organisation</div>
+            <div class="divsectioncontent">
+                <div class="rowdiv">
+                    <span>Organisation Name</span>
+                    <span><input type="text" class="inputtext" id="txtOrg" value="Benefactor-Clairvoyant" /></span>
+                </div>
+                <div class="rowdiv">
+                    <span>
+                        Organisation PAT
+                    </span>
+                    <span style=" margin-left: 25px;"><input type="password" class="inputtext" id="txtpat" value="nh6emfd3kbcveqxxrpzsdjizsiwlqmfgsr7nznttg6xx3yvsnvqq" /></span>
+                </div>
+                <div class="rowdiv marginbuttom-10">
+                    <span><input type="button" class="getproject  btn-blue" value="Connect" /></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loadingdiv text-center">
+        <img src="~/AzureIcons/loader_spin.gif" style="width:154px; height:86px" />
+    </div>
+    @*Load Project List*@
+    <div class="projectdivsection divprojectcreationoptionmain">
+        <div class="row-header"> Create DevOps pipeline </div>
+        <span class="spaninfo">Choose one option to create pipeline</span>
+        <div class="divoptioncontent">
+            <label>
+                <input type="radio" name="projectoption" value="0" /> For Existing Project
+            </label>
+            <label class="marginleft-50">
+                <input type="radio" name="projectoption" value="1" /> Create New Project
+            </label>
+        </div>
+    </div>
+
+    <div id="divExistingProjectList" class="">
+        <div class="">
+            <div class="projectdivsection">
+                <div class="row-header"> Project List: </div>
+                <span class="spaninfo"> Click on the select button to Select project to add pipeline</span>
+                <table id="tblexistingProjects"></table>
+            </div>
+
+
+            <div class="projectdivsection">
+                <div class="row-header divpipelinecaption"> Create Pipeline from Existing Project </div>
+                <span class="spaninfo"> Enter Project Name and select Technology to create Project and Pipeline</span>
+                <div class="divsectioncontent marginleft-10">
+
+                    <div style=" display: inline-flex; width:100%">
+                        <div class="divProjectName ">
+                            ProjectName:
+                            <input type="text" class="inputtext" id="txtnewProject" />
+                        </div>
+                        <div style="margin-left:90px;margin-top:4px;">
+                            Technology:
+                            <select id="dlltechnology">
+                                <option value="0">.net</option>
+                                <option value="1">Java</option>
+                                <option value="2">Python</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="projectdivsection divAddWorkItems">
+                <div class="row-header"> Work Item</div>
+                <span class="spaninfo">Add Work Item into the Project</span>
+
+                <div class="divWokItemContainer" style="margin-top:10px;">
+                    <div style=" display: inline-flex; width:100%; margin-left: 20px; margin-bottom:10px;" class="divWorkItemRow">
+                        <div class="taskTitle " style=" text-align: center; vertical-align: middle; display: inline-flex; ">
+                            <div style="vertical-align: middle;margin-top: 13px;margin-right: 20px;"> Title</div>
+                            <textarea name="Text1" class="txtTaskTtile" disabled="disabled" cols="60" rows="1"></textarea>
+                        </div>
+                        <div style="margin-left:90px;margin-top:13px;">
+                            TaskType:
+                            <select id="ddlTaskType">
+                                <option value="0">Task</option>
+                                <option value="1">Bug</option>
+                                <option value="2">Epic</option>
+                                <option value="3">Feature</option>
+                            </select>
+                        </div>
+                        <div style=" margin-left: 20px; margin-top: 10px; ">
+                            <input type="button" id="btndelworkitemrow" class=" delworkitemrow ui-icon ui-icon-closethick" value="Delete" />
+                        </div>
+                    </div>
+                    <div class="divBtnWorkItem">
+                        <input type="button" id="btnAddWorkItem" class="addworkitem btn-blue" value="Add New Work Item" />
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="projectdivsection divSectionExistingWorkItems">
+                <div class="row-header"> Work Items </div>
+                <span class="spaninfo"> Work Items list for the project</span>
+                <table id="tblexistingWorkItems"></table>
+            </div>
+            <div class="inline-flex text-right" style="margin-left: 60%;">
+                <div class="divGotoCloudEconomy gotoCloudEconomy" title="Go to Cloud Economics">
+                    <span class="spanTopMenu">
+                        <a asp-area="" asp-controller="Pricing" asp-action="ProductList">Cloud Economics </a>
+                    </span>
+                </div>
+                <div class="divProcess">
+                    <input type="button" id="btnprocess" class="process  disablebutton" value="Process" />
+                </div>
+            </div>
+            <div class="projectcreationmessage"></div>
+        </div>
+        @*End Load Project List*@
+
+        <br />
+        <div class="deletedv" hidden>
+            <span>Enter ProjectName to Delete</span>
+            <span><input type="text" id="txtdelProject" /></span>
+            <input type="button" class="delete" value="Delete" />
+        </div>
+
+    </div>
+
+    <div class="divresult">
+        <div class="projectdivsection">
+            <div class="row-header">Success</div>
+            <div class="newsectionmessage"></div>
+            <input type="button" class="showList btn-blue" value="Show List" />
+        </div>
+    </div>
+
+    <div id="status" class="divstatus"></div>
+    <div id="divToken" class="divtoken"></div>
+
+</div>

@@ -1,0 +1,498 @@
+﻿<div class="text-center">
+    @*<h1 class="display-4"> Pricing calculator</h1>*@
+    <p class="text-heading3">Configure and estimate the costs for Azure / AWS products</p>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+@*<script src="js/site.js" asp-append-version="true"></script>*@
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+
+        // SetBackColor for TopMenu
+        $(".divCloudEconomics").addClass("selectedTopMenu");
+        $(".divCloudEconomics span a").addClass("selectedTopMenu");
+
+        // Get Selected Project from DevOps
+        var currentSelectedProject = sessionStorage.getItem('currentSelectedProject');
+        $(".projectName").text(currentSelectedProject);
+
+        //Get Org and PAT
+        var org = sessionStorage.getItem("org");
+        var pat = sessionStorage.getItem("pat");
+
+        function hideDivTab() {
+            $(".divTab").hide();
+        }
+
+        function LoadProductList(source) {
+            // Load Products as per selected checkbox
+            var url = "https://localhost:44346/api/v1/GetProductList?source=" + source;
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+
+                    if (result.length > 0) {
+                        fillProductList(result, source);
+                        calucalteTotalCost();
+                        registerTabEvents();
+                        ActiveSelectedTab(source);
+                        createEstimateSummary(source);
+                        if (source == "AWS") {
+                            highlightTabSelect(1);
+                        }
+                        else {
+                            highlightTabSelect(0);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
+        function fillProductList(result, source) {
+
+            var priceValClass = "totalpriceValAzure";
+            var productListDiv = ".divProductListAzure";
+
+            if (source == "AWS") {
+                priceValClass = "totalpriceValAws";
+                productListDiv = ".divProductListAWS";
+            }
+
+            $(productListDiv).html('');
+
+            for (var i = 0; i < result.length; i++) {
+                var product = result[i];
+                var productName = product.productName;   // 'Virtual Machines';
+                var imageSrc = product.imageSrc;     // '/AzureIcons/VM-icon.png';
+                var prodDesc = product.description;  // 'Provision Windows and Linux virtual machines in seconds';
+                var prodPrice = product.unitPrice;    // 152.57;
+                var totalprodPrice = prodPrice;
+                var prodDetails = product.details;     //'1 D2 v3 (2 vCPUs, 8 GB RAM) x 730 Hours (Pay as you go), Windows (License included), OS Only; 0 managed disks – S4, 100 transaction units; Inter Region transfer type, 5 GB outbound data transfer from West US to East Asia';
+                var itemDiv = ' <div class="divProductItems"> ' +
+                    ' <div class="divproductimagecontainer inline-flex">' +
+                    '    <img class="img-product" src=' + imageSrc + '>' +
+                    '    <div>' +
+                    '        <div class="imageDescription">' + productName + '</div> ' +
+                    '       <div class="productDescription"> ' + prodDesc + '</div>' +
+                    '   </div>' +
+                    '  </div> ' +
+                    '  <div class="productdetails">' + prodDetails + '</div> ' +
+                    '  <div class="pricediv inline-flex margin-top30"> ' +
+                    '      <div class="divpriceInfo"> ' +
+                    '         <span class="costInfo">Per Instance</span> ' +
+                    '         <span class="priceText margin-left20">$</span><span class="priceVal priceText margin-right20">' + prodPrice + '</span> ' +
+                    '    </div>  <span class="costInfo margin-top10" style="font-style:normal">X</span> ' +
+                    '   <div class="number-holder wide widest "> ' +
+                    '      <div class="wa-textNumber">  ' +
+                    ' <input class="spinbutton numeric" role="spinbutton"  aria-valuemax="100"  aria-valuemin="0"  aria-valuenow="1" type="number" min="0" value="1">  </div> </div>' +
+                    '   <div class="divTotalpriceInfo">' +
+                    '                 <span class="costInfo">Total: </span>' +
+                    '                 <span class="priceText margin-left20">$</span><span class="  ' + priceValClass + ' totalpriceVal  priceText margin-right20">' + totalprodPrice + '</span>' +
+                    '    </div>' +
+                    '  </div>' +
+                    ' </div> ';
+                $(productListDiv).append(itemDiv);
+
+                registerspinbuttonEvent(source);
+
+            }
+        }
+
+        function calucalteTotalCost() {
+            var sumAzure = 0;
+            $('.totalpriceValAzure').each(function () {
+                sumAzure += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+            });
+            $(".totalcostAzure").html(parseFloat(sumAzure).toFixed(2));
+
+            var sumAws = 0;
+            $('.totalpriceValAws').each(function () {
+                sumAws += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
+            });
+            $(".totalcostAWS").html(parseFloat(sumAws).toFixed(2));
+        }
+
+        // Clear Search Event
+        $(".clear-search").click(function (e) {
+            // Clear the ProductSearch textbox
+            $(".product-search").val('');
+
+            // Show All Product
+            $('.divProductItems').show();
+
+        });
+
+        // Product Search Event
+        $(".product-search").keyup(function (e) {
+            var searchText = $(this).val().trim().toLowerCase();
+
+            // First Hide all
+            $('.divProductItems').hide();
+
+            if (searchText.length > 0) {
+
+                $('.divProductItems').each(function () {
+                    if ($(this).find("div.imageDescription").html().trim().toLowerCase().indexOf(searchText) >= 0) {
+                        $(this).show();
+                    }
+                });
+            }
+            else {
+                // Show All Product
+                $('.divProductItems').show();
+            }
+
+        });
+
+
+        function hideAllProductDataDiv() {
+            $(".azureProductList").hide();
+            $(".awsProductList").hide();
+        }
+
+        function highlightTabSelect(surce) {
+            //RemoveHighlight Class for all
+            $(".btnawsTab").removeClass("selectedTopMenu");
+            $(".btnAzureTab").removeClass("selectedTopMenu");
+
+            if (surce == 0) {
+                // Hihlight self
+                $(".btnAzureTab").addClass("selectedTopMenu");
+            }
+            if (surce == 1) {
+
+                // Hihlight self
+                $(".btnawsTab").addClass("selectedTopMenu");
+            }
+        }
+
+        function registerTabEvents() {
+            // Click on AzureTab
+            $(".btnAzureTab").click(function (e) {
+                // hIDE aLL
+                hideAllProductDataDiv();
+
+                // Display AzreTab
+                $(".azureProductList").show();
+                highlightTabSelect(0);
+
+            });
+
+            // Click on AWS
+            $(".btnawsTab").click(function (e) {
+                // hIDE aLL
+                hideAllProductDataDiv();
+
+                // Show AWS
+                $(".awsProductList").show();
+                highlightTabSelect(1);
+
+            });
+        }
+
+        //Checkox group checked
+        $('.azureChkbox').change(function () {
+            if (this.checked) {
+                // Load Data for selected Options
+                LoadProductList($(this).val());
+            }
+            else {
+                // Hide the selected resources
+                $(".azureProductList").hide();
+                // Disable Tab Control
+                $(".btnAzureTab").hide();
+
+                // CheckIf AWS checkbox is checked then display that
+                if ($('.awsChkbox:checked').length > 0) {
+
+                    $(".awsProductList").show();
+                    $(".btnawsTab").show();
+                    highlightTabSelect(1);
+                }
+            }
+
+        });
+
+        //Checkox group checked
+        $('.awsChkbox').change(function () {
+            if (this.checked) {
+                // Load Data for selected Options
+                LoadProductList($(this).val());
+            }
+            else {
+                // Hide the selected resources
+                $(".awsProductList").hide();
+                // Disable Tab Control
+                $(".btnawsTab").hide();
+
+                // CheckIf Azure checkbox is checked then display that
+                if ($('.azureChkbox:checked').length > 0) {
+
+                    $(".azureProductList").show();
+                    $(".btnAzureTab").show();
+                    highlightTabSelect(0);
+                }
+            }
+
+        });
+
+
+        function hideProductData(source) {
+            if (source == "Azure") {
+                $(".azureProductList").hide();
+
+                // Disable Tab Control
+                $(".btnAzureTab").hide();
+            }
+            if (source == "AWS") {
+                $(".awsProductList").hide();
+
+                // Disable Tab Control
+                $(".btnawsTab").hide();
+            }
+        }
+
+        function ActiveSelectedTab(source) {
+            if (source == "Azure") {
+                $(".azureProductList").show();
+                $(".awsProductList").hide();
+
+                // Disable Tab Control
+                $(".btnAzureTab").show();
+            }
+            if (source == "AWS") {
+                $(".awsProductList").show();
+                $(".azureProductList").hide();
+
+                // Disable Tab Control
+                $(".btnawsTab").show();
+            }
+        }
+
+
+        function registerspinbuttonEvent(source) {
+            $(".spinbutton").change(function (e) {
+                var selectedVal = $(this).val();
+                var unitPrice = $(this).closest(".pricediv").find("span.priceVal").html().trim();
+                var totalPrice = parseFloat(unitPrice * selectedVal).toFixed(2);
+
+                // UpdateTotalPrice
+                $(this).closest(".pricediv").find("span.totalpriceVal").html(totalPrice);
+
+                calucalteTotalCost();
+                createEstimateSummary(source);
+            });
+        }
+
+        var rowData;
+
+        function createEstimateSummary(source) {
+            // Clean the Summary tag
+
+            rowData = '';
+            var maindivElement = '';
+            if (source == "Azure") {
+                maindivElement = ".azureProductList";
+            }
+            if (source == "AWS") {
+                maindivElement = ".awsProductList";
+            }
+            $(maindivElement).find("div.estimateSummary").html('');
+
+            // Check All selected quantity.
+            //If any quantity > 0, Get the Product Name, Quantity, Total cose.
+            // Add into Arrray to display in the Summary
+            var summaryElement;
+
+            var tblstartContent = '<div class="estimateSummaryItem">   <table>';
+            var tableEndContent = '  </table>  </div> ';
+            var rData = '';
+
+
+            $(maindivElement).find("div.divProductItems").each(function (e) {
+                var instanceCount = $(this).find("input.spinbutton").val();
+                if (instanceCount > 0) {
+                    var productName = $(this).find("div.imageDescription").html();
+                    var tp = $(this).find("span.totalpriceVal").html();
+
+                    rowData += instanceCount + " - " + productName + "~*";
+
+                    rData += '      <tr> ' +
+                        '          <td><span class="font22boldmarginright30">' + instanceCount + '</span></td> ' +
+                        '         <td> <span class="font22boldmarginright30">' + productName + ' </span> </td> ' +
+                        '         <td><span class="font22boldmarginright30">  $ ' + tp + '</span></td> ' +
+                        '     </tr> ';
+                }
+
+            });
+
+            tblstartContent += rData;
+            tblstartContent += tableEndContent;
+
+            $(maindivElement).find("div.estimateSummary").append(tblstartContent);
+        }
+
+        $(".addWorkItemIT").click(function (e) {
+
+            var description = "Test";
+            var taskTitle = "Task for IT Team to create Resources"
+            // Create WorkItem For IT TEAM
+
+            // Needs to know for which project
+            // Load Products as per selected checkbox
+            var url = "https://localhost:44346/api/v1/CreateWorkItem?org=" + org + "&pat=" + pat + "&projectName=" + currentSelectedProject + "&taskTitle=" + taskTitle + "&desc=" + rowData;
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+
+                    if (result.length > 0) {
+                        alert('Work Item has been created ');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+
+        });
+
+        calucalteTotalCost();
+        hideDivTab();
+        hideAllProductDataDiv();
+
+        //createEstimateSummary();
+
+        // No Default ProductList
+        //LoadProductList();
+
+
+        // No default Tab Event
+        //registerTabEvents();
+
+    });
+</script>
+
+<span class="projectName"></span>
+
+<div class=" divSelectSource inline-flex " style="margin-left:31%; border:1px solid blue; padding:20px; margin-bottom:20px;">
+    <div class="font-weight-bold"> Select Source </div>
+    <div class="">
+        <input type="checkbox" class="azureChkbox resourceCheckBox marginleft-50" name="sourceCheckbx" value="Azure" /> <span class="margin-left20 font22">Azure</span>
+        <input type="checkbox" class=" awsChkbox resourceCheckBox marginleft-50" name="sourceCheckbx" value="AWS" /> <span class="margin-left20 font22">AWS </span>
+    </div>
+</div>
+<br />
+<div class="divTabContainer inline-flex margin-left25">
+    <input type="button" id="btnAzureTab" class="divTab btnAzureTab bluebutton" value="Azure" />
+    <input type="button" id="btnawsTab" class="divTab btnawsTab bluebutton" value="AWS" />
+</div>
+
+<div class="divpagemaincontent inline-flex azureProductList">
+
+    <div id="divProductList" class="ProductList">
+        <div class="product-search-container">
+            <input class="product-search" aria-label="Search products" placeholder="Search products" value="">
+            <button class="clear-search" aria-label="Clear search" type="submit" data-bi-an="body" data-bi-tn="clear-search">×</button>
+        </div>
+        <div class="">
+            <div class="projectdivsection">
+                <div class="row-header"> Product List: </div>
+                <span class="spaninfo"> Select Product from the list to view the estimates</span>
+                <div class="divProductListAzure height800auto"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="divestimate">
+        <div class="divEstimateHeader"> Your Estimate</div>
+        <div class="projectdivsection">
+            <div class="row-header">Estimate</div>
+            <span class="spaninfo"> Total estimation as per selected products</span>
+            <div class="estimateSummary margin10">
+                <div class="estimateSummaryItem">
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="font22boldmarginright30">1</span>
+                            </td>
+                            <td>
+                                <span class="font22boldmarginright30">Virtual Machine </span>
+                            </td>
+                            <td>
+                                <span class="font22boldmarginright30"> Cost: $ 152.57</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <span class="priceText margin-left20 text-black-50" style="font-size:18px;"></span>
+                </div>
+            </div>
+            <div class="text-center">
+                <span class="costInfo">Total: </span><span class="priceText margin-left20 text-black-50">$</span><span class="totalcostAzure priceText margin-right20 text-black-50 font-weight-bold">152.57</span>
+            </div>
+        </div>
+        <div class="text-right">
+            <input type="button" id="btnaddWorkItemIT" class="bluebutton selectedTopMenu addWorkItemIT" value="Create WorkItems" />
+        </div>
+    </div>
+</div>
+
+<div class="divpagemaincontent inline-flex awsProductList">
+    <div id="divProductList" class="ProductList">
+        <div class="product-search-container">
+            <input class="product-search" aria-label="Search products" placeholder="Search products" value="">
+            <button class="clear-search" aria-label="Clear search" type="submit" data-bi-an="body" data-bi-tn="clear-search">×</button>
+        </div>
+        <div class="">
+            <div class="projectdivsection">
+                <div class="row-header"> Product List: </div>
+                <span class="spaninfo"> Select Product from the list to view the estimates</span>
+                <div class="divProductListAWS height800auto"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="divestimate">
+        <div class="divEstimateHeader"> Your Estimate</div>
+        <div class="projectdivsection">
+            <div class="row-header">Estimate</div>
+            <span class="spaninfo"> Total estimation as per selected products</span>
+            <div class="estimateSummary margin10">
+                <div class="estimateSummaryItem">
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="font22boldmarginright30">1</span>
+                            </td>
+                            <td>
+                                <span class="font22boldmarginright30">Virtual Machine </span>
+                            </td>
+                            <td>
+                                <span class="font22boldmarginright30"> Cost: $ 152.57</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <span class="priceText margin-left20 text-black-50" style="font-size:18px;"></span>
+                </div>
+            </div>
+            <div class="text-center">
+                <span class="costInfo">Total: </span><span class="priceText margin-left20 text-black-50">$</span><span class="totalcostAWS priceText margin-right20 text-black-50 font-weight-bold">152.57</span>
+            </div>
+
+        </div>
+        <div class="text-right">
+            <input type="button" id="btnaddWorkItemIT" class="bluebutton selectedTopMenu addWorkItemIT" value="Create WorkItems" />
+        </div>
+    </div>
+</div>
