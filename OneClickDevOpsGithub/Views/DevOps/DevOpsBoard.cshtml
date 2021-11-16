@@ -14,6 +14,8 @@
 <script type="text/javascript">
     jQuery(document).ready(function () {
 
+        var hostname = hostname = window.origin;
+
         // Set Org & PAT
         sessionStorage.setItem('org', $("#txtOrg").val());
         sessionStorage.setItem('pat', $("#txtpat").val());
@@ -53,9 +55,10 @@
         $(".divSectionExistingWorkItems").hide();
 
 
+        var getTokenURL = hostname + '/api/v1/GetToken';
         function GetToken() {
             jQuery.ajax({
-                url: "https://localhost:44346/api/v1/GetToken",
+                url: getTokenURL,
                 type: "get",
                 contentType: "application/json",
                 success: function (result, status, xhr) {
@@ -71,7 +74,7 @@
             $("#divSectionExistingWorkItems").hide();
             var org = $("#txtOrg").val();
             var pat = $("#txtpat").val();
-            var url = "https://localhost:44346/api/v1/GetWorkItemList?org=" + org + "&pat1=" + pat + "&projectName=" + projectName;
+            var url = hostname + "/api/v1/GetWorkItemList?org=" + org + "&pat1=" + pat + "&projectName=" + projectName;
             jQuery.ajax({
                 url: url,
                 type: "get",
@@ -119,7 +122,7 @@
             $(".loadingdiv").show();
             var org = $("#txtOrg").val();
             var pat = $("#txtpat").val();
-            var url = "https://localhost:44346/api/v1/GetProjectList?org=" + org + "&pat1=" + pat;
+            var url = hostname + "/api/v1/GetProjectList?org=" + org + "&pat1=" + pat;
             jQuery.ajax({
                 url: url,
                 type: "get",
@@ -195,7 +198,7 @@
                 }
             });
             workItemList = workItemList.splice(1);
-            var url = "https://localhost:44346/api/v1/CreateProject?projectName=" + projectName + "&description=" + desc + "&org=" + org + "&pat1=" + pat + "&type=" + projectType + "&isexist=" + existingProject + "&numberOfTask=" + workItemList.length;
+            var url = hostname + "/api/v1/CreateProject?projectName=" + projectName + "&description=" + desc + "&org=" + org + "&pat1=" + pat + "&type=" + projectType + "&isexist=" + existingProject + "&numberOfTask=" + workItemList.length;
 
             $(".projectcreationmessage").html('<br> Project creation, yaml upload and pipeline is in progress...');
             jQuery.ajax({
@@ -225,7 +228,7 @@
             var org = $("#txtOrg").val();
             var pat = $("#txtpat").val();
             var projectName = $("#txtdelProject").val();
-            var url = "https://localhost:44346/api/v1/DeleteProject?projectName=" + projectName + "&org=" + org + "&pat1=" + pat;;
+            var url = hostname + "/api/v1/DeleteProject?projectName=" + projectName + "&org=" + org + "&pat1=" + pat;;
 
             jQuery.ajax({
                 url: url,

@@ -10,6 +10,7 @@
 <script type="text/javascript">
     jQuery(document).ready(function () {
 
+        var hostname = hostname = window.origin;
 
         // SetBackColor for TopMenu
         $(".divCloudEconomics").addClass("selectedTopMenu");
@@ -29,7 +30,7 @@
 
         function LoadProductList(source) {
             // Load Products as per selected checkbox
-            var url = "https://localhost:44346/api/v1/GetProductList?source=" + source;
+            var url = hostname +"/api/v1/GetProductList?source=" + source;
             jQuery.ajax({
                 url: url,
                 type: "get",
@@ -348,7 +349,7 @@
 
             // Needs to know for which project
             // Load Products as per selected checkbox
-            var url = "https://localhost:44346/api/v1/CreateWorkItem?org=" + org + "&pat=" + pat + "&projectName=" + currentSelectedProject + "&taskTitle=" + taskTitle + "&desc=" + rowData;
+            var url = hostname + "/api/v1/CreateWorkItem?org=" + org + "&pat=" + pat + "&projectName=" + currentSelectedProject + "&taskTitle=" + taskTitle + "&desc=" + rowData;
             jQuery.ajax({
                 url: url,
                 type: "get",
