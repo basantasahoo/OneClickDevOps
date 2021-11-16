@@ -633,26 +633,28 @@ namespace OneClickDevOpsGithub
             WorkItemQueryResult tasks = witClient.QueryByWiqlAsync(wiq).Result;
             IEnumerable<WorkItemReference> tasksRefs;
             tasksRefs = tasks.WorkItems.OrderBy(x => x.Id);
-
-            List<Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models.WorkItem> tasksList = witClient.GetWorkItemsAsync(tasksRefs.Select(wir => wir.Id)).Result;
-
             List<WorkItemValue> workItemFinalList = new List<WorkItemValue>();
 
-            foreach (var task in tasksList)
+            if (tasksRefs.Count() > 0)
             {
-                workItemFinalList.Add(new WorkItemValue()
+                List<Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models.WorkItem> tasksList = witClient.GetWorkItemsAsync(tasksRefs.Select(wir => wir.Id)).Result;
+
+                foreach (var task in tasksList)
                 {
-                    Id = task.Id.Value,
-                    Url = task.Url,
-                    Fields = new WorkItemFields()
+                    workItemFinalList.Add(new WorkItemValue()
                     {
-                        Title = task.Fields["System.Title"].ToString(),
-                        Reason = task.Fields["System.Reason"].ToString(),
-                        State = task.Fields["System.State"].ToString(),
-                        TeamProject = task.Fields["System.TeamProject"].ToString(),
-                        WorkItemType = task.Fields["System.WorkItemType"].ToString()
-                    }
-                });
+                        Id = task.Id.Value,
+                        Url = task.Url,
+                        Fields = new WorkItemFields()
+                        {
+                            Title = task.Fields["System.Title"].ToString(),
+                            Reason = task.Fields["System.Reason"].ToString(),
+                            State = task.Fields["System.State"].ToString(),
+                            TeamProject = task.Fields["System.TeamProject"].ToString(),
+                            WorkItemType = task.Fields["System.WorkItemType"].ToString()
+                        }
+                    });
+                }
             }
 
             return workItemFinalList;
