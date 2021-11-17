@@ -99,7 +99,7 @@
 
                         for (var i = 0; i < result.length; i++) {
 
-                            var linkUrl = "https://dev.azure.com/Benefactor-Clairvoyant/" + projectName + "/_workitems/edit/" + result[i].id;
+                            var linkUrl = "https://dev.azure.com/" + org + "/" + projectName + "/_workitems/edit/" + result[i].id;
                             var datarow = "<tr>" +
                                 "<td> " + result[i].id + "</td > " +
                                 "<td> <a href=" + linkUrl + " target='_blank'> " + result[i].fields.title + " </a></td > " +
