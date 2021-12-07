@@ -19,16 +19,30 @@
         function startAIMonitor() {
             // Check the WEB APP response.
             //TODO::
+            var url ='https://oneclickapp.azurewebsites.net/';
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+                    if (result) {
+                        // Display logs for AI monitor
+                        var logtext = " Web App is running without issue.";
+                        $(".divmonitor").append("</br>" + logtext);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
 
-            // Display logs for AI monitor
-            var logtext = " Web App is running without issue.";
-            $(".divmonitor").append("</br>" + logtext);
+           
         }
 
         // Start AI OPS Monitor
         setInterval(function () {
             startAIMonitor();
-        }, 6000);
+        }, 60000);
         startAIMonitor();
     });
 </script>
