@@ -521,3 +521,14 @@ body {
 .color-blue{
     color:blue;
 }
+.log-text {
+    margin-left: 25%;
+    margin-top: 50px;
+    border: 1px solid green;
+    min-height: 500px;
+    padding-top: 20px;
+    padding-left: 20px;
+    font-size: 18px;
+    color: black;
+    font-style: italic;
+}

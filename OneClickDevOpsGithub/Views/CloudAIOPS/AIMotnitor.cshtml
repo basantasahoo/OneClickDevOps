@@ -1,0 +1,38 @@
+﻿<div class="text-center">
+    @*<h1 class="display-4"> Pricing calculator</h1>*@
+    <p class="text-heading3">Cloud AI OPS Monitor</p>
+</div>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        var hostname = hostname = window.origin;
+
+        // SetBackColor for TopMenu
+        $(".divCloudAI").addClass("selectedTopMenu");
+        $(".divCloudAI span a").addClass("selectedTopMenu");
+
+        //Get Org and PAT
+        var org = sessionStorage.getItem("org");
+        var pat = sessionStorage.getItem("pat");
+
+        function startAIMonitor() {
+            // Check the WEB APP response.
+            //TODO::
+
+            // Display logs for AI monitor
+            var logtext = " Web App is running without issue.";
+            $(".divmonitor").append("</br>" + logtext);
+        }
+
+        // Start AI OPS Monitor
+        setInterval(function () {
+            startAIMonitor();
+        }, 6000);
+        startAIMonitor();
+    });
+</script>
+
+<div class="divmonitor log-text">
+    Started Monitoring Web App
+</div>
