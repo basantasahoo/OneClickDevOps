@@ -343,7 +343,7 @@
 
         $(".addWorkItemIT").click(function (e) {
 
-           
+            //$(".modal").show();
             var description = "Test";
             var taskTitle = "Task for IT Team to create Resources"
             // Create WorkItem For IT TEAM
@@ -371,17 +371,17 @@
 
         function registerModalPopup() {
             $(".modal").hide();
-            
-            $(".close").clikc(function () {
+
+            $(".close").click(function () {
                 $(".modal").hide();
             });
 
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    $(".modal").hide();
-                }
-            }
+            //// When the user clicks anywhere outside of the modal, close it
+            //window.onclick = function (event) {
+            //    if (event.target == modal) {
+            //        $(".modal").hide();
+            //    }
+            //}
         }
 
         calucalteTotalCost();
