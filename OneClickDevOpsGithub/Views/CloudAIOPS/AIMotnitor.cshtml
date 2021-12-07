@@ -25,9 +25,13 @@
                 type: "get",
                 contentType: "application/json",
                 success: function (result, status, xhr) {
-                    if (result) {
+                    if (status == "success") {
                         // Display logs for AI monitor
-                        var logtext = " Web App is running without issue.";
+                        var logtext = " Web App is running without any issue.";
+                        $(".divmonitor").append("</br>" + logtext);
+                    }
+                    else {
+                        var logtext = " There is error in the WebApp. Reverting to the latest success build";
                         $(".divmonitor").append("</br>" + logtext);
                     }
                 },
