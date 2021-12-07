@@ -343,30 +343,29 @@
 
         $(".addWorkItemIT").click(function (e) {
 
-            $(".modal").show();
-            //var description = "Test";
-            //var taskTitle = "Task for IT Team to create Resources"
-            //// Create WorkItem For IT TEAM
+           
+            var description = "Test";
+            var taskTitle = "Task for IT Team to create Resources"
+            // Create WorkItem For IT TEAM
 
-            //// Needs to know for which project
-            //// Load Products as per selected checkbox
-            //var url = hostname + "/api/v1/CreateWorkItem?org=" + org + "&pat=" + pat + "&projectName=" + currentSelectedProject + "&taskTitle=" + taskTitle + "&desc=" + rowData;
-            //jQuery.ajax({
-            //    url: url,
-            //    type: "get",
-            //    contentType: "application/json",
-            //    success: function (result, status, xhr) {
+            // Needs to know for which project
+            // Load Products as per selected checkbox
+            var url = hostname + "/api/v1/CreateWorkItem?org=" + org + "&pat=" + pat + "&projectName=" + currentSelectedProject + "&taskTitle=" + taskTitle + "&desc=" + rowData;
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
 
-            //        if (result.length > 0) {
-            //            alert('Work Item has been created ');
-
-            //            // Show the Carbon Emmision Reduction Message.
-            //        }
-            //    },
-            //    error: function (xhr, status, error) {
-            //        console.log(xhr)
-            //    }
-            //});
+                    if (result.length > 0) {
+                        // Show the Carbon Emmision Reduction Message.
+                        $(".modal").show();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
 
         });
 
@@ -521,7 +520,7 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <p class="modal-message color-blue">New Work Item has been created to setup the Cloud Economics</p>
-        <p class="modal-message color-green"> Carbon footprints has been reduced upto 4%</p>
+        <div> <p class="modal-message color-green"> You have saved 4% of Carbon footprints using our OneClick application</p> </div>
     </div>
 
 </div>
