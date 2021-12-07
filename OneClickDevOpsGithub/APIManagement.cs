@@ -273,7 +273,7 @@ namespace OneClickDevOpsGithub
             repo.azprojectList = new List<AzProject>();
             // List<WorkItemValue> workItemLit = GetWorkItemListFromAPI2(org, pat1);
 
-            list.value.ForEach(d => {
+            list?.value?.ForEach(d => {
                 AzProject pro = new AzProject() { id = d.id, name = d.name, url = d.url };
                 pro.azPipelineList = GetPipelineList(org, pat1, d.id).value;
                 pro.azPipelineList = pro.azPipelineList ?? new List<Value>();

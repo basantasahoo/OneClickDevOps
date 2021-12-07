@@ -30,7 +30,7 @@
 
         function LoadProductList(source) {
             // Load Products as per selected checkbox
-            var url = hostname +"/api/v1/GetProductList?source=" + source;
+            var url = hostname + "/api/v1/GetProductList?source=" + source;
             jQuery.ajax({
                 url: url,
                 type: "get",
@@ -343,29 +343,47 @@
 
         $(".addWorkItemIT").click(function (e) {
 
-            var description = "Test";
-            var taskTitle = "Task for IT Team to create Resources"
-            // Create WorkItem For IT TEAM
+            $(".modal").show();
+            //var description = "Test";
+            //var taskTitle = "Task for IT Team to create Resources"
+            //// Create WorkItem For IT TEAM
 
-            // Needs to know for which project
-            // Load Products as per selected checkbox
-            var url = hostname + "/api/v1/CreateWorkItem?org=" + org + "&pat=" + pat + "&projectName=" + currentSelectedProject + "&taskTitle=" + taskTitle + "&desc=" + rowData;
-            jQuery.ajax({
-                url: url,
-                type: "get",
-                contentType: "application/json",
-                success: function (result, status, xhr) {
+            //// Needs to know for which project
+            //// Load Products as per selected checkbox
+            //var url = hostname + "/api/v1/CreateWorkItem?org=" + org + "&pat=" + pat + "&projectName=" + currentSelectedProject + "&taskTitle=" + taskTitle + "&desc=" + rowData;
+            //jQuery.ajax({
+            //    url: url,
+            //    type: "get",
+            //    contentType: "application/json",
+            //    success: function (result, status, xhr) {
 
-                    if (result.length > 0) {
-                        alert('Work Item has been created ');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.log(xhr)
-                }
-            });
+            //        if (result.length > 0) {
+            //            alert('Work Item has been created ');
+
+            //            // Show the Carbon Emmision Reduction Message.
+            //        }
+            //    },
+            //    error: function (xhr, status, error) {
+            //        console.log(xhr)
+            //    }
+            //});
 
         });
+
+        function registerModalPopup() {
+            $(".modal").hide();
+            
+            $(".close").clikc(function () {
+                $(".modal").hide();
+            });
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    $(".modal").hide();
+                }
+            }
+        }
 
         calucalteTotalCost();
         hideDivTab();
@@ -379,6 +397,7 @@
 
         // No default Tab Event
         //registerTabEvents();
+        registerModalPopup();
 
     });
 </script>
@@ -496,4 +515,13 @@
             <input type="button" id="btnaddWorkItemIT" class="bluebutton selectedTopMenu addWorkItemIT" value="Create WorkItems" />
         </div>
     </div>
+</div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p class="modal-message color-blue">New Work Item has been created to setup the Cloud Economics</p>
+        <p class="modal-message color-green"> Carbon footprints has been reduced upto 4%</p>
+    </div>
+
 </div>
