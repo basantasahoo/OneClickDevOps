@@ -26,13 +26,13 @@
                 type: "get",
                 contentType: "application/json",
                 success: function (result, status, xhr) {
-                    if (status == "success") {
+                    if (result) {
                         // Display logs for AI monitor
                         var logtext = " Web App is running without any issue.";
                         $(".divmonitor").append("</br>" + logtext);
                     }
                     else {
-                        var logtext = " There is error in the WebApp. Reverting to the latest success build";
+                        var logtext = " There is error in the WebApp. Redeploying the latest success build";
                         $(".divmonitor").append("</br>" + logtext);
                     }
                 },
