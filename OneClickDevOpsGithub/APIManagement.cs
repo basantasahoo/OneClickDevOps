@@ -306,6 +306,23 @@ namespace OneClickDevOpsGithub
             return productLit;
         }
 
+        [HttpGet]
+        [Route("api/v1/CheckAppServiceResponse")]
+        public async Task<bool> ChecAppService()
+        {
+            bool status = default(bool);
+
+            HttpClient client = new HttpClient();
+            string url = "https://cloudaitestapp.azurewebsites.net";
+            var checkingResponse = await client.GetAsync(url);
+            if (checkingResponse.StatusCode == HttpStatusCode.OK)
+            {
+                return true;
+
+            }
+            return status;
+        }
+
         #endregion
 
         #region GetTestMethod

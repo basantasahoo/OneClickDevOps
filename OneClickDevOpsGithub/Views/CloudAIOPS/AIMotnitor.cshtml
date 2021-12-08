@@ -19,7 +19,8 @@
         function startAIMonitor() {
             // Check the WEB APP response.
             //TODO::
-            var url ='https://cloudaitestapp.azurewebsites.net/';
+            var url = hostname + "/api/v1/CheckAppServiceResponse";
+            //var url = 'https://cloudaitestapp.azurewebsites.net/';
             jQuery.ajax({
                 url: url,
                 type: "get",
