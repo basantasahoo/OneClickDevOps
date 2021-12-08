@@ -492,7 +492,7 @@ body {
     margin: auto;
     padding: 10px;
     border: 1px solid #888;
-    width: 40%;
+    width: 63%;
 }
 
 /* The Close Button */
@@ -503,7 +503,7 @@ body {
     font-weight: bold;
     text-align:right;
 }
-
+s
     .close:hover,
     .close:focus {
         color: #000;
@@ -511,7 +511,7 @@ body {
         cursor: pointer;
     }
 .modal-message {
-    font-weight: bold;
+    /*font-weight: bold;*/
     font-size: 20px;
     text-align:center;
 }
@@ -531,4 +531,8 @@ body {
     font-size: 18px;
     color: black;
     font-style: italic;
+}
+.error-text{
+    font-weight:bold;
+    color:red;
 }

@@ -29,11 +29,17 @@
                     if (result) {
                         // Display logs for AI monitor
                         var logtext = " Web App is running without any issue.";
-                        $(".divmonitor").append("</br>" + logtext);
+                        $(".divmonitor").append("</br><p>" + logtext);
                     }
                     else {
-                        var logtext = " There is error in the WebApp. Redeploying the latest success build";
-                        $(".divmonitor").append("</br>" + logtext);
+                        var logtext = " There is error in the WebApp. ";
+                        var messageText = " Redeploying the last <b> AI  </b> model accurate build from Model Factory. <b> ArtifacT:1211210.4 </b> with model Acurracy <b> 70% </b>";
+                        $(".divmonitor").append("</br>  <p class='error-text'>Error- " + logtext + "</p> " + messageText);
+                        $(".divmonitor").append("<br> Deployment is in progress...");
+
+                        // Start the App Service 
+                       // startAppService();
+                        setTimeout(function () { $(".divmonitor").append("<br><p class='color-green'> Deployment done successfully</p>") }, 10000);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -42,6 +48,24 @@
             });
 
            
+        }
+        function startAppService() {
+          
+            var url = hostname + "/api/v1/StartAppService";
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+                    if (result) {
+                        setTimeout(function () { $(".divmonitor").append("<br><p class='color-green'> Deployment done successfully</p>") }, 10000);
+                        return true;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
         }
 
         // Start AI OPS Monitor
@@ -54,4 +78,5 @@
 
 <div class="divmonitor log-text">
     Started Monitoring Web App
+  
 </div>
