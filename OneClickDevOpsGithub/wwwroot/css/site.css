@@ -476,7 +476,7 @@ body {
     /*display: none;*/ /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 18%; /* Location of the box */
+    padding-top: 11%; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -535,4 +535,15 @@ s
 .error-text{
     font-weight:bold;
     color:red;
+}
+.cfclass {
+    color:white;
+    width:1px;
+    height:1px;
+}
+.divdisclaimer {
+    font-size: 20px;
+    font-style: italic;
+    color: blue;
+    margin-top: 25px;
 }

@@ -12,6 +12,7 @@ namespace OneClickDevOpsGithub.Models
         public string Description { get; set; }
         public string Details { get; set; }
         public decimal UnitPrice { get; set; }
+        public decimal CF { get; set; }
 
     }
 }

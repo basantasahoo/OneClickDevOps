@@ -43,6 +43,7 @@
                         registerTabEvents();
                         ActiveSelectedTab(source);
                         createEstimateSummary(source);
+                        calculateCF();
                         if (source == "AWS") {
                             highlightTabSelect(1);
                         }
@@ -77,6 +78,8 @@
                 var prodPrice = product.unitPrice;    // 152.57;
                 var totalprodPrice = prodPrice;
                 var prodDetails = product.details;     //'1 D2 v3 (2 vCPUs, 8 GB RAM) x 730 Hours (Pay as you go), Windows (License included), OS Only; 0 managed disks – S4, 100 transaction units; Inter Region transfer type, 5 GB outbound data transfer from West US to East Asia';
+                var cf = product.cf;
+                var totalCf = cf;
                 var itemDiv = ' <div class="divProductItems"> ' +
                     ' <div class="divproductimagecontainer inline-flex">' +
                     '    <img class="img-product" src=' + imageSrc + '>' +
@@ -97,7 +100,8 @@
                     '   <div class="divTotalpriceInfo">' +
                     '                 <span class="costInfo">Total: </span>' +
                     '                 <span class="priceText margin-left20">$</span><span class="  ' + priceValClass + ' totalpriceVal  priceText margin-right20">' + totalprodPrice + '</span>' +
-                    '    </div>' +
+                    '    </div> <div class="divCF cfclass"> ' + cf + '</div> <div class="divCFTotal cfclass"> ' + totalCf +'</div>' +
+
                     '  </div>' +
                     ' </div> ';
                 $(productListDiv).append(itemDiv);
@@ -119,6 +123,28 @@
                 sumAws += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
             });
             $(".totalcostAWS").html(parseFloat(sumAws).toFixed(2));
+        }
+
+        function calculateCF() {
+
+            // Calculate Total CF Sum
+            var sumCF = 0;
+            $('.divCFTotal').each(function () {
+                sumCF += parseFloat($(this).text());  
+            });
+           
+            var maindivElement = ".azureProductList";
+
+            // Calculate Total Instance 
+            var sumInstance = 0;
+            $(maindivElement).find("div.divProductItems").each(function (e) {
+                sumInstance += parseFloat($(this).find("input.spinbutton").val());
+            });
+
+            var cfAvg = parseFloat(sumCF / sumInstance).toFixed(2);
+            var cfPercentage = parseFloat(parseFloat(cfAvg / sumInstance) * 100).toFixed(2);
+
+            $(maindivElement).find('span.cfTotalPercentage').text(cfPercentage);
         }
 
         // Clear Search Event
@@ -284,12 +310,20 @@
                 var selectedVal = $(this).val();
                 var unitPrice = $(this).closest(".pricediv").find("span.priceVal").html().trim();
                 var totalPrice = parseFloat(unitPrice * selectedVal).toFixed(2);
+                var cf = $(this).closest(".pricediv").find("div.divCF").html().trim();;
+                var totalCf = parseFloat(selectedVal * cf).toFixed(2);
+
 
                 // UpdateTotalPrice
                 $(this).closest(".pricediv").find("span.totalpriceVal").html(totalPrice);
 
+                // Update Total CF = 
+                //divCFTotal
+                $(this).closest(".pricediv").find("div.divCFTotal").html(totalCf);
+
                 calucalteTotalCost();
                 createEstimateSummary(source);
+                calculateCF();
             });
         }
 
@@ -343,7 +377,8 @@
 
         $(".addWorkItemIT").click(function (e) {
 
-           // $(".modal").show();
+            //displayModalMessage();
+
             var description = "Test";
             var taskTitle = "Task for IT Team to create Resources"
             // Create WorkItem For IT TEAM
@@ -359,7 +394,7 @@
 
                     if (result.length > 0) {
                         // Show the Carbon Emmision Reduction Message.
-                        $(".modal").show();
+                        displayModalMessage();
                     }
                 },
                 error: function (xhr, status, error) {
@@ -368,6 +403,27 @@
             });
 
         });
+
+        function displayModalMessage() {
+            // Get CF Percentages 
+            var maindivElement = ".azureProductList";
+            var cfPercentages = $(maindivElement).find('span.cfTotalPercentage').text();
+            var cfMessage = "You have saved <b> " + cfPercentages + " % </b> of <b>Carbon footprints </b> using our <b>OneClick </b> application till this stage";
+            
+            if (cfPercentages > 30) {
+                $(".cfmessage").removeClass("error-text");
+                $(".cfmessage").addClass("color-green");
+            }
+            else {
+                $(".cfmessage").addClass("error-text");
+                $(".cfmessage").removeClass("color-green");
+                cfMessage = "You have saved <b> " + cfPercentages + " % </b> of <b>Carbon footprints </b> using our <b>OneClick </b> application till this stage. You may want to revisit you choice to improve and care to environment.";
+            }
+
+            $(".cfmessage").html(cfMessage);
+
+            $(".modal").show();
+        }
 
         function registerModalPopup() {
             $(".modal").hide();
@@ -430,6 +486,7 @@
                 <div class="divProductListAzure height800auto"></div>
 
             </div>
+            <div class="divdisclaimer">* Limited Asset displayed only MVP</div>
         </div>
     </div>
 
@@ -459,6 +516,9 @@
             <div class="text-center">
                 <span class="costInfo">Total: </span><span class="priceText margin-left20 text-black-50">$</span><span class="totalcostAzure priceText margin-right20 text-black-50 font-weight-bold">152.57</span>
             </div>
+            <div class="text-center cfclass">
+                <span class="cfTotalPercentage "></span>
+            </div>
         </div>
         <div class="text-right">
             <input type="button" id="btnaddWorkItemIT" class="bluebutton selectedTopMenu addWorkItemIT" value="Create WorkItems" />
@@ -479,6 +539,7 @@
                 <div class="divProductListAWS height800auto"></div>
 
             </div>
+            <div class="divdisclaimer">* Limited Asset displayed only MVP</div>
         </div>
     </div>
 
@@ -522,8 +583,8 @@
         <p class="modal-message color-blue">New Work Item has been created to setup the Cloud Economics</p>
         <div>
             <img class="img-product" style="height: 13%" src="~/AzureIcons/CI.jpg" />
-            <img class="img-product" style="height: 40%"  src="~/AzureIcons/CF1.png" />
-            <p class="modal-message color-green"> You have saved <b> 4% </b> of Carbon footprints using our <b>OneClick </b> application till this stage.</p>
+            <img class="img-product" style="height: 40%" src="~/AzureIcons/CF1.png" />
+            <p class="modal-message color-green cfmessage"> You have saved <b> 4% </b> of Carbon footprints using our <b>OneClick </b> application till this stage.</p>
         </div>
     </div>
 
