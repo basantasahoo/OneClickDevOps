@@ -1,17 +1,17 @@
-name: .NET
+name: Hackathon2021
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
-   steps:
+    steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -19,4 +19,3 @@ jobs:
         dotnet-version: 3.0.x
     - name: Restore dependencies
       run: dotnet restore
-    
