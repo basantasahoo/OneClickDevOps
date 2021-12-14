@@ -28,7 +28,7 @@ jobs:
     - name: Upload Coding Dojos Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: CodingDojos
+        name: Benefactor_Clairvoyant
         path: /home/runner/work/OneClickDevOps/OneClickDevOps/OneClickDevOpsGithub/bin/Debug/netcoreapp3.1/publish/
     - name: Test
       run: dotnet test --no-build --verbosity normal
