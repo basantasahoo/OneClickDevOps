@@ -19,8 +19,4 @@ jobs:
         dotnet-version: 3.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
-      uses: ./.github/Action
-      #run: dotnet build --no-restore
-    - name: Publish
-      run: dotnet publish 
+    
