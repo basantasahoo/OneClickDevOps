@@ -1,0 +1,7 @@
+name: Hackathon 2021
+author: Prasanta
+description: Hackathon 2021
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
