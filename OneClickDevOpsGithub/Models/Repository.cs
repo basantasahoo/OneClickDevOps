@@ -183,4 +183,36 @@ namespace OneClickDevOpsGithub.Models1
         public string Title { get; set; }
         public string Type { get; set; }
     }
+
+
+    public class ArtifactProperties
+    {
+        public string localpath { get; set; }
+        public string artifactsize { get; set; }
+    }
+
+    public class ArtifactResource
+    {
+        public string type { get; set; }
+        public string data { get; set; }
+        public ArtifactProperties properties { get; set; }
+        public string url { get; set; }
+        public string downloadUrl { get; set; }
+    }
+
+    public class ArtifactValue
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string source { get; set; }
+        public ArtifactResource resource { get; set; }
+    }
+
+    public class RootArtifact
+    {
+        public int count { get; set; }
+        public List<ArtifactValue> value { get; set; }
+    }
+
+
 }

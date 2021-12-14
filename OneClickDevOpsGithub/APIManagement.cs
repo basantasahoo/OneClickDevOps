@@ -17,6 +17,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace OneClickDevOpsGithub
 {
@@ -264,10 +265,22 @@ namespace OneClickDevOpsGithub
         }
 
         [HttpGet]
+        [Route("api/v1/GetArtifact")]
+        public RootArtifact GetProjectArtifact(string org, string pat, string projectName)
+        {
+            RootArtifact data = new RootArtifact();
+            // Create Task
+            data = GetArtifacts( org, pat, projectName);
+
+            return data;
+        }
+
+        [HttpGet]
         [Route("api/v1/GetProjectList")]
         public AzRepository GetProjectList(string org, string pat1, bool isRepository = false)
         {
             Models.Repository list = GetAllRepositories(org, pat1, isRepository);
+                 
 
             AzRepository repo = new AzRepository();
             repo.azprojectList = new List<AzProject>();
@@ -323,24 +336,53 @@ namespace OneClickDevOpsGithub
             return status;
         }
 
+        private static async Task<string> GetAccessToken()
+        {
+            Console.WriteLine("Begin GetAccessToken");
+            string tenantId = "a23d489f-d887-4e80-a67a-725ef29238e7";
+            string clientId = "f360863a-17c6-464e-a0b1-deaa43ff3c79";
+
+            string clientSecreate = "IkR7Q~Spj5OMVbmX9mJuMqFGoZQU9iPJLwYbN";
+
+            string authContextURL = "https://login.windows.net/" + tenantId;
+            var authenticationContext = new AuthenticationContext(authContextURL);
+            var credential = new ClientCredential(clientId, clientSecreate);
+            var result = await authenticationContext.AcquireTokenAsync("https://management.azure.com/", credential);
+            if (result == null)
+            {
+                throw new InvalidOperationException("Failed to obtain the JWT token");
+            }
+            string token = result.AccessToken;
+            return token;
+        }
+
         [HttpGet]
         [Route("api/v1/StartAppService")]
-        public bool StartAppService()
+        public async Task<bool> StartAppService()
         {
+            string accesstoken = GetAccessToken().Result;
             bool status = default(bool);
 
             var url = "https://management.azure.com/subscriptions/924c87d5-d151-484b-8b4a-d7bda28bbe83/resourceGroups/AITestApp/providers/Microsoft.Web/sites/cloudAITestApp/start?api-version=2021-02-01";
-            var accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Imwzc1EtNTBjQ0g0eEJWWkxIVEd3blNSNzY4MCIsImtpZCI6Imwzc1EtNTBjQ0g0eEJWWkxIVEd3blNSNzY4MCJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hMjNkNDg5Zi1kODg3LTRlODAtYTY3YS03MjVlZjI5MjM4ZTcvIiwiaWF0IjoxNjM4OTUzOTQ3LCJuYmYiOjE2Mzg5NTM5NDcsImV4cCI6MTYzODk1ODEzMiwiYWNyIjoiMSIsImFpbyI6IkFXUUFtLzhUQUFBQW9VeHZiaHloeXlOdUZFMmFiS3I4NVZXVkJ5T21qSW95cmxFdUJpc21oNEFGdFZlRk5BbnQrNDVHZjNEb1JXRFhQNTJCNVVJZnhyV01ZM2lGeXJlVjJBU0NrL0lPWndBbmlWaWtISVpqV2hXVG1jVlZxSnVndGR6SGpsbzhnNlhjIiwiYWx0c2VjaWQiOiIxOmxpdmUuY29tOjAwMDY3RkZFOTM4MDlCNjgiLCJhbXIiOlsicHdkIiwibWZhIl0sImFwcGlkIjoiN2Y1OWE3NzMtMmVhZi00MjljLWEwNTktNTBmYzViYjI4YjQ0IiwiYXBwaWRhY3IiOiIyIiwiZW1haWwiOiJCQVNBTlRBX1NBSE9PQGhvdG1haWwuY29tIiwiZmFtaWx5X25hbWUiOiJTYWhvbyIsImdpdmVuX25hbWUiOiJCYXNhbnRhIiwiZ3JvdXBzIjpbIjMwZTc1Y2YzLWE1YTItNDU0ZS04MWRkLWJjODVjNjc4ODkxMyJdLCJpZHAiOiJsaXZlLmNvbSIsImlwYWRkciI6IjIwLjE4Ny44MS4zMyIsIm5hbWUiOiJCYXNhbnRhIFNhaG9vIiwib2lkIjoiN2Q1NjM1MDItM2E1NS00ZjFmLTk2N2UtOGYzYzk4MTAxODUyIiwicHVpZCI6IjEwMDMyMDAxQTg0RTY5MzAiLCJyaCI6IjAuQVZVQW4wZzlvb2ZZZ0U2bWVuSmU4cEk0NTNPbldYLXZMcHhDb0ZsUV9GdXlpMFNJQUt3LiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInN1YiI6ImdWeVVGeFFtUkZ1enJ5S3ZKb3JWYTZCWHI2aFNzMGN1UHg1SHVxU1VXcFEiLCJ0aWQiOiJhMjNkNDg5Zi1kODg3LTRlODAtYTY3YS03MjVlZjI5MjM4ZTciLCJ1bmlxdWVfbmFtZSI6ImxpdmUuY29tI0JBU0FOVEFfU0FIT09AaG90bWFpbC5jb20iLCJ1dGkiOiJDWVZWX1BWOEFrLTdNNzlpSTZwaEFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3RjZHQiOjE2MzcwMzYxNzB9.kaW14pZC3UO8I9z18buSnp1H3w - nosl4L29PvIlqPbpnY - noqxRiAJ399S5sHy6D7beM7ks4TIbMh32dkrvypLOip - Nt7UfOQENby8uLelAC7YbSZF3qs - QUiYJFX538R3PvCWCxo2yDOZXcLSLogJocC69EzL - 9F - _5xDLIsJK8to2soTopNU956LzGkKhi5fieLCsIAvv7J7iX6IWfjRYZXMqwj0DpNORB8jxikCV52ieGIM1aS6BkPQv7nWP3Adv1EEqb_yw75XUclTCus5pfA6qzOSdd1_QNzGDzuIQ26bSEdtEqpZnTbr4WR42OS6veTaAExGIF0APB0gYV_w";
-           // POST https://management.azure.com/subscriptions/924c87d5-d151-484b-8b4a-d7bda28bbe83/resourceGroups/AITestApp/providers/Microsoft.Web/sites/cloudAITestApp/start?api-version=2021-02-01
+            // var accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Imwzc1EtNTBjQ0g0eEJWWkxIVEd3blNSNzY4MCIsImtpZCI6Imwzc1EtNTBjQ0g0eEJWWkxIVEd3blNSNzY4MCJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hMjNkNDg5Zi1kODg3LTRlODAtYTY3YS03MjVlZjI5MjM4ZTcvIiwiaWF0IjoxNjM4OTUzOTQ3LCJuYmYiOjE2Mzg5NTM5NDcsImV4cCI6MTYzODk1ODEzMiwiYWNyIjoiMSIsImFpbyI6IkFXUUFtLzhUQUFBQW9VeHZiaHloeXlOdUZFMmFiS3I4NVZXVkJ5T21qSW95cmxFdUJpc21oNEFGdFZlRk5BbnQrNDVHZjNEb1JXRFhQNTJCNVVJZnhyV01ZM2lGeXJlVjJBU0NrL0lPWndBbmlWaWtISVpqV2hXVG1jVlZxSnVndGR6SGpsbzhnNlhjIiwiYWx0c2VjaWQiOiIxOmxpdmUuY29tOjAwMDY3RkZFOTM4MDlCNjgiLCJhbXIiOlsicHdkIiwibWZhIl0sImFwcGlkIjoiN2Y1OWE3NzMtMmVhZi00MjljLWEwNTktNTBmYzViYjI4YjQ0IiwiYXBwaWRhY3IiOiIyIiwiZW1haWwiOiJCQVNBTlRBX1NBSE9PQGhvdG1haWwuY29tIiwiZmFtaWx5X25hbWUiOiJTYWhvbyIsImdpdmVuX25hbWUiOiJCYXNhbnRhIiwiZ3JvdXBzIjpbIjMwZTc1Y2YzLWE1YTItNDU0ZS04MWRkLWJjODVjNjc4ODkxMyJdLCJpZHAiOiJsaXZlLmNvbSIsImlwYWRkciI6IjIwLjE4Ny44MS4zMyIsIm5hbWUiOiJCYXNhbnRhIFNhaG9vIiwib2lkIjoiN2Q1NjM1MDItM2E1NS00ZjFmLTk2N2UtOGYzYzk4MTAxODUyIiwicHVpZCI6IjEwMDMyMDAxQTg0RTY5MzAiLCJyaCI6IjAuQVZVQW4wZzlvb2ZZZ0U2bWVuSmU4cEk0NTNPbldYLXZMcHhDb0ZsUV9GdXlpMFNJQUt3LiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInN1YiI6ImdWeVVGeFFtUkZ1enJ5S3ZKb3JWYTZCWHI2aFNzMGN1UHg1SHVxU1VXcFEiLCJ0aWQiOiJhMjNkNDg5Zi1kODg3LTRlODAtYTY3YS03MjVlZjI5MjM4ZTciLCJ1bmlxdWVfbmFtZSI6ImxpdmUuY29tI0JBU0FOVEFfU0FIT09AaG90bWFpbC5jb20iLCJ1dGkiOiJDWVZWX1BWOEFrLTdNNzlpSTZwaEFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3RjZHQiOjE2MzcwMzYxNzB9.kaW14pZC3UO8I9z18buSnp1H3w - nosl4L29PvIlqPbpnY - noqxRiAJ399S5sHy6D7beM7ks4TIbMh32dkrvypLOip - Nt7UfOQENby8uLelAC7YbSZF3qs - QUiYJFX538R3PvCWCxo2yDOZXcLSLogJocC69EzL - 9F - _5xDLIsJK8to2soTopNU956LzGkKhi5fieLCsIAvv7J7iX6IWfjRYZXMqwj0DpNORB8jxikCV52ieGIM1aS6BkPQv7nWP3Adv1EEqb_yw75XUclTCus5pfA6qzOSdd1_QNzGDzuIQ26bSEdtEqpZnTbr4WR42OS6veTaAExGIF0APB0gYV_w";
+            // POST https://management.azure.com/subscriptions/924c87d5-d151-484b-8b4a-d7bda28bbe83/resourceGroups/AITestApp/providers/Microsoft.Web/sites/cloudAITestApp/start?api-version=2021-02-01
 
-            var response = "";
-            using (var client = new HttpClient())
+            var httpClient = new HttpClient
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-                var baseUrl = new Uri(url);
-                response = client.GetAsync(baseUrl).Result.Content.ReadAsStringAsync().Result;
-            }
-            
+                BaseAddress = new Uri(url)
+            };
+
+            httpClient.DefaultRequestHeaders.Remove("Authorization");
+            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accesstoken);
+            HttpResponseMessage response = await httpClient.PostAsync(url, null);
+
+            var HttpsResponse = await response.Content.ReadAsStringAsync();
+            var JSONObject = JsonConvert.DeserializeObject<object>(HttpsResponse);
+
+            Console.WriteLine(JSONObject);
+           // var JSONObj = JsonConvert.Deserialize<Dictionary<string, string>>(JSONObject);
+           // return response.StatusCode.ToString();
+
             return status;
         }
 
@@ -696,6 +738,50 @@ namespace OneClickDevOpsGithub
             }
 
             return workItemFinalList;
+        }
+
+
+        public RootArtifact GetArtifacts(string org, string pat1, string projectname)
+        {
+            string result = string.Empty;
+            RootArtifact artifactItem = new RootArtifact();
+
+            string organization = org;
+            string pat = pat1;
+            string buildId = "46";
+
+            string url = $"https://dev.azure.com/{organization}/{projectname}/_apis/build/builds/{buildId}/artifacts?api-version=6.0";
+
+            var cokiestoUse = new CookieContainer();
+            using (var handler = new HttpClientHandler { CookieContainer = cokiestoUse, Credentials = new NetworkCredential("", "") })
+            using (var client = new HttpClient(handler))
+            {
+                //client.BaseAddress = new Uri();
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Add("Cookie", "VstsSession=%7B%22PersistentSessionId%22%3A%224890eb27-901e-44bc-8b9f-17ca8c8cf349%22%2C%22PendingAuthenticationSessionId%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22CurrentAuthenticationSessionId%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22SignInState%22%3A%7B%7D%7D");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(
+                   System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", pat))));
+
+                using (var response = client.GetAsync(client.BaseAddress).Result)
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        // Get response data 
+                        result = response.Content.ReadAsStringAsync().Result;
+
+                        // Deserialize the Response JSON data to ProjectList.
+                        artifactItem = JsonConvert.DeserializeObject<RootArtifact>(result);
+                    }
+                    else if (response.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        // Log for the bad request.
+                        var message = response.Content.ReadAsStringAsync().Result;
+                        // Log Message
+                    }
+                }
+            }
+            return artifactItem;
         }
 
         #endregion

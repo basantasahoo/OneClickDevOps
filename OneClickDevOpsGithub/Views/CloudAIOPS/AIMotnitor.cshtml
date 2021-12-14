@@ -16,6 +16,8 @@
         var org = sessionStorage.getItem("org");
         var pat = sessionStorage.getItem("pat");
 
+        var currentSelectedProject = sessionStorage.getItem('currentSelectedProject');
+
         function startAIMonitor() {
             // Check the WEB APP response.
             //TODO::
@@ -33,24 +35,23 @@
                     }
                     else {
                         var logtext = " There is error in the WebApp. ";
-                        var messageText = " Redeploying the last <b> AI  </b> model accurate build from Model Factory. <b> ArtifacT:1211210.4 </b> with model Acurracy <b> 70% </b>";
-                        $(".divmonitor").append("</br>  <p class='error-text'>Error- " + logtext + "</p> " + messageText);
-                        $(".divmonitor").append("<br> Deployment is in progress...");
+                        var messageText = " Redeploying  the latest <b> AI  </b> model accurate build from Model Factory with model Acurracy <b> 70% </b>";
+                        $(".divmonitor").append("</br>  <p class='error-text'>Something went wrong: " + logtext + "</p> " + messageText);
+                       // $(".divmonitor").append("<br> Deployment is in progress...");
 
                         // Start the App Service 
                       // startAppService();
-                       setTimeout(function () { $(".divmonitor").append("<br><p class='color-green'> Deployment done successfully</p>") }, 10000);
+                        getArtifact();
+                      // setTimeout(function () { $(".divmonitor").append("<br><p class='color-green'> Deployment done successfully</p>") }, 10000);
                     }
                 },
                 error: function (xhr, status, error) {
                     console.log(xhr)
                 }
             });
-
-           
         }
+
         function startAppService() {
-          
             var url = hostname + "/api/v1/StartAppService";
             jQuery.ajax({
                 url: url,
@@ -68,10 +69,41 @@
             });
         }
 
+        function getArtifact() {
+            if (currentSelectedProject.length == 0) {
+                currentSelectedProject = "OneClick";
+            }
+            var url = hostname + "/api/v1/GetArtifact?org=" + org + "&pat=" + pat + "&projectName=" + currentSelectedProject;
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+                    if (result) {
+
+                        $(".divmonitor").append("<br> Getting Artifact details.");
+                        var artifactMessage = "<br> ID:<b>" + result.value[0].id + "</b>, Name <b>" + result.value[0].name + "</b>, Source: <b>" + result.value[0].source +"</b>";
+                        $(".divmonitor").append(artifactMessage);
+                        var downloadingMessage = "<br>Downloading artifact from URL <b> <p class='color-blue'>" + result.value[0].resource.downloadUrl+"</p></b>";
+                        $(".divmonitor").append(downloadingMessage);
+
+                        var deployingMessage = "Deploying the ARTIFACT .....................";
+                        setTimeout(function () { $(".divmonitor").append("<p class='color-blue'>Download Completed.</p>" +  deployingMessage) }, 5000);
+                        setTimeout(function () { $(".divmonitor").append("</br> <p class='color-blue'> Deployment Completed. </p>") }, 10000);
+
+                       return true;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
         // Start AI OPS Monitor
         setInterval(function () {
             startAIMonitor();
-        }, 60000);
+        }, 30000);
         startAIMonitor();
     });
 </script>
