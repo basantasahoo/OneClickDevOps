@@ -12,6 +12,16 @@
 
         var hostname = hostname = window.origin;
 
+        // Check if POST ORG and POST PAT1 is there.
+        var postOrg = '@ViewBag.POSTOrg';
+        var postPat1 = '@ViewBag.POSTPat1';
+
+        if (postOrg.length > 0 && postPat1.length > 0) {
+            // Set Org & PAT
+            sessionStorage.setItem('org', postOrg);
+            sessionStorage.setItem('pat', postPat1);
+        }
+
         // SetBackColor for TopMenu
         $(".divCloudEconomics").addClass("selectedTopMenu");
         $(".divCloudEconomics span a").addClass("selectedTopMenu");
@@ -132,12 +142,12 @@
             // Calculate Total CF Sum
             var sumCF = 0;
             $('.divCFTotal').each(function () {
-                sumCF += parseFloat($(this).text());  
+                sumCF += parseFloat($(this).text());
             });
-           
+
             var maindivElement = ".azureProductList";
 
-            // Calculate Total Instance 
+            // Calculate Total Instance
             var sumInstance = 0;
             $(maindivElement).find("div.divProductItems").each(function (e) {
                 sumInstance += parseFloat($(this).find("input.spinbutton").val());
@@ -319,7 +329,7 @@
                 // UpdateTotalPrice
                 $(this).closest(".pricediv").find("span.totalpriceVal").html(totalPrice);
 
-                // Update Total CF = 
+                // Update Total CF =
                 //divCFTotal
                 $(this).closest(".pricediv").find("div.divCFTotal").html(totalCf);
 
@@ -407,11 +417,11 @@
         });
 
         function displayModalMessage() {
-            // Get CF Percentages 
+            // Get CF Percentages
             var maindivElement = ".azureProductList";
             var cfPercentages = $(maindivElement).find('span.cfTotalPercentage').text();
             var cfMessage = "You have saved <b> " + cfPercentages + " % </b> of <b>Carbon footprints </b> using our <b>OneClick </b> application till this stage";
-            
+
             if (cfPercentages > 30) {
                 $(".cfmessage").removeClass("error-text");
                 $(".cfmessage").addClass("color-green");

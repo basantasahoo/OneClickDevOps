@@ -51,6 +51,16 @@ namespace OneClickDevOpsGithub
 
         #region Public Methods
 
+        [HttpPost]
+        [Route("api/v1/TestPostMethod")]
+        public string TestPostMethod(string projectName, string pat)
+        {
+            string result = string.Empty;
+            result = projectName + pat;
+
+            return result;
+        }
+
         [HttpGet]
         [Route("api/v1/GetProjectLink")]
         public string GetProjectLink(string projectName)
@@ -127,7 +137,15 @@ namespace OneClickDevOpsGithub
             return newpro.id;
         }
 
-        [HttpGet]
+        [HttpPost]
+        [Route("api/v1/CreateProjectPost")]
+        public string CreateProjectPOST(string projectName, string description, string org, string pat1, string type, bool isexist, int numberOfTask)
+        {
+            return CreateProject(projectName, description, org, pat1, type, isexist, numberOfTask);
+        }
+
+
+            [HttpGet]
         [Route("api/v1/CreateProject")]
         public string CreateProject(string projectName, string description, string org, string pat1, string type, bool isexist, int numberOfTask)
         {
@@ -294,6 +312,13 @@ namespace OneClickDevOpsGithub
                 repo.azprojectList.Add(pro);
             });
             return repo;
+        }
+
+        [HttpPost]
+        [Route("api/v1/ProjectList")]
+        public AzRepository ProjectList(string org, string pat1)
+        {
+            return GetProjectList(org, pat1);
         }
 
         [HttpGet]
