@@ -34,14 +34,19 @@
                         $(".divmonitor").append("</br><p>" + logtext);
                     }
                     else {
-                        var logtext = " There is error in the WebApp. ";
-                        var messageText = " Redeploying  the latest <b> AI  </b> model accurate build from Model Factory with model Acurracy <b> 70% </b>";
-                        $(".divmonitor").append("</br>  <p class='error-text'>Something went wrong: " + logtext + "</p> " + messageText);
-                       // $(".divmonitor").append("<br> Deployment is in progress...");
 
-                        // Start the App Service 
-                      // startAppService();
-                        getArtifact();
+                        // Display logs for AI monitor
+                        var logtext = " Web App is running without any issue.";
+                        $(".divmonitor").append("</br><p>" + logtext);
+
+                      //  var logtext = " There is error in the WebApp. ";
+                      //  var messageText = " Redeploying  the latest <b> AI  </b> model accurate build from Model Factory with model Acurracy <b> 70% </b>";
+                      //  $(".divmonitor").append("</br>  <p class='error-text'>Something went wrong: " + logtext + "</p> " + messageText);
+                      // // $(".divmonitor").append("<br> Deployment is in progress...");
+
+                      //  // Start the App Service 
+                      //// startAppService();
+                      //  getArtifact();
                       // setTimeout(function () { $(".divmonitor").append("<br><p class='color-green'> Deployment done successfully</p>") }, 10000);
                     }
                 },

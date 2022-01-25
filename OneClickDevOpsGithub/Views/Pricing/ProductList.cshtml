@@ -1,6 +1,6 @@
 ﻿<div class="text-center">
     @*<h1 class="display-4"> Pricing calculator</h1>*@
-    <p class="text-heading3">Configure and estimate the costs for Azure / AWS products</p>
+    <p class="text-heading3" style="margin-top:20px;margin-bottom:20px;">Configure and estimate the costs for Azure / AWS products</p>
 </div>
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -19,6 +19,8 @@
         // Get Selected Project from DevOps
         var currentSelectedProject = sessionStorage.getItem('currentSelectedProject');
         $(".projectName").text(currentSelectedProject);
+
+        $(".awsChkbox").prop("disabled", true);
 
         //Get Org and PAT
         var org = sessionStorage.getItem("org");
