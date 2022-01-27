@@ -9,7 +9,7 @@
 
 <script type="text/javascript">
     jQuery(document).ready(function () {
-
+        $(".loadingdiv").hide();
         var hostname = hostname = window.origin;
 
         // Check if POST ORG and POST PAT1 is there.
@@ -390,7 +390,7 @@
         }
 
         $(".addWorkItemIT").click(function (e) {
-
+            $(".loadingdiv").show();
             //displayModalMessage();
 
             var description = "Test";
@@ -405,7 +405,7 @@
                 type: "get",
                 contentType: "application/json",
                 success: function (result, status, xhr) {
-
+                    $(".loadingdiv").hide();
                     if (result.length > 0) {
                         // Show the Carbon Emmision Reduction Message.
                         displayModalMessage();
@@ -472,7 +472,9 @@
 </script>
 
 <span class="projectName"></span>
-
+<div class="loadingdiv text-center loadingImage_pricing">
+    <img src="~/AzureIcons/loader_spin.gif" style="width:154px; height:86px" />
+</div>
 <div class=" divSelectSource inline-flex " style="margin-left:31%; border:1px solid blue; padding:20px; margin-bottom:20px;">
     <div class="font-weight-bold"> Select Source </div>
     <div class="">

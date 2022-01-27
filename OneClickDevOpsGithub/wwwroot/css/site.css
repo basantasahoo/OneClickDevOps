@@ -501,9 +501,10 @@ body {
     float: right;
     font-size: 38px;
     font-weight: bold;
-    text-align:right;
+    text-align: right;
+    cursor: pointer;
 }
-s
+
     .close:hover,
     .close:focus {
         color: #000;
@@ -546,4 +547,15 @@ s
     font-style: italic;
     color: blue;
     margin-top: 25px;
+}
+.loadingImage_pricing {
+    position:fixed;
+    z-index: 1000;
+    padding-top: 12%;
+    overflow: auto;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
 }
