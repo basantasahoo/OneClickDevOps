@@ -15,11 +15,13 @@
         // Check if POST ORG and POST PAT1 is there.
         var postOrg = '@ViewBag.POSTOrg';
         var postPat1 = '@ViewBag.POSTPat1';
+        var postProjectName = '@ViewBag.POSTProjectName';
 
-        if (postOrg.length > 0 && postPat1.length > 0) {
+        if (postOrg.length > 0 && postPat1.length > 0 && postProjectName.length > 0) {
             // Set Org & PAT
             sessionStorage.setItem('org', postOrg);
             sessionStorage.setItem('pat', postPat1);
+            sessionStorage.setItem('currentSelectedProject', postProjectName);
         }
 
         // SetBackColor for TopMenu

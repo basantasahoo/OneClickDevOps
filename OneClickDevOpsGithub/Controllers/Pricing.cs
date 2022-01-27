@@ -8,12 +8,13 @@ namespace OneClickDevOpsGithub.Controllers
 {
     public class Pricing : Controller
     {
-        public IActionResult ProductList(string org, string pat1)
+        public IActionResult ProductList(string org, string pat1, string projectName)
         {
             if (!string.IsNullOrEmpty(org) && !string.IsNullOrEmpty(pat1))
             {
                 ViewBag.POSTOrg = org;
                 ViewBag.POSTPat1 = pat1;
+                ViewBag.POSTProjectName = projectName;
 
             }
             return View();
