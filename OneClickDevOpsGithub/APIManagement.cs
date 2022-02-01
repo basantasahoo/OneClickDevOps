@@ -144,8 +144,15 @@ namespace OneClickDevOpsGithub
             return CreateProject(projectName, description, org, pat1, type, isexist, numberOfTask);
         }
 
+        [HttpPost]
+        [Route("api/v1/CreateProjectFromBot")]
+        public string CreateProjectFromBot([FromBody] DevOpsProject prop)
+        {
+            return CreateProject(prop.ProjectName, prop.Description, prop.Org, prop.Pat1, prop.Type, prop.IsExist, prop.NumberOfTask);
+        }
 
-            [HttpGet]
+
+        [HttpGet]
         [Route("api/v1/CreateProject")]
         public string CreateProject(string projectName, string description, string org, string pat1, string type, bool isexist, int numberOfTask)
         {

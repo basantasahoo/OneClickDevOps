@@ -17,4 +17,17 @@ namespace OneClickDevOpsGithub.Models
         public string HOSTURL { get; set; }
 
     }
+
+    public class DevOpsProject
+    {
+        // string projectName, string description, string org, string pat1, string type, bool isexist, int numberOfTask
+        public string ProjectName { get; set; }
+        public string Description { get; set; }
+        public string Org { get; set; }
+        public string Pat1 { get; set; }
+        public string Type { get; set; }
+        public bool IsExist { get; set; }
+        public int NumberOfTask { get; set; }
+
+    }
 }
