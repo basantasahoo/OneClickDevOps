@@ -145,6 +145,13 @@ namespace OneClickDevOpsGithub
         }
 
         [HttpPost]
+        [Route("api/v1/CreatePipelinePost")]
+        public string CreatePipelinePost(string projectId, string org, string pat1, string type)
+        {
+            return CreateProject(projectId, "", org, pat1, type, true, 0);
+        }
+
+        [HttpPost]
         [Route("api/v1/CreateProjectFromBot")]
         public string CreateProjectFromBot([FromBody] DevOpsProject prop)
         {

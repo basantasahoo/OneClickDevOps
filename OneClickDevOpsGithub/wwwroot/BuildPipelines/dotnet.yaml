@@ -56,6 +56,26 @@ steps:
    # codeCoverageTool: 'cobertura'
     #summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
 
+
+#- task: FortifyOnDemandStatic@8
+ # inputs:
+  #  FodConnection: '*************'
+   # PolicyFailAction: '1'
+   # FortifyProjects: '**************'
+   # ReleaseOptions: '2'
+   # EntitlementSelection: '1'
+   # EntitlementPreference: '2'
+   # OverrideScanSettings: '2'
+   # InProgressScanActionType: '0'
+   # RemediationScanPreference: '0'
+   # BuildType: 'msbuild'
+
+
+- task: DotNetCoreCLI@2
+  displayName: 'Fortify SAST Scan'
+  inputs:
+    command: 'publish'
+    
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
   inputs:
@@ -65,8 +85,6 @@ steps:
     arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
     zipAfterPublish: true
 
-- task: WhiteSource Bolt@20
-  displayName: 'Run WhiteSource Bolt'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: packagefeed'
