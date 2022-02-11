@@ -364,9 +364,15 @@
             // Add into Arrray to display in the Summary
             var summaryElement;
 
-            var tblstartContent = '<div class="estimateSummaryItem">   <table>';
+            var tblstartContent = '<div class="estimateSummaryItem">   <table style="border:1px solid black">';
             var tableEndContent = '  </table>  </div> ';
             var rData = '';
+            rData += '      <tr style="border:1px solid black"> ' +
+                '          <td><span class="font22boldmarginright30">Sl No</span></td> ' +
+                '         <td> <span class="font22boldmarginright30">Product </span> </td> ' +
+                '         <td><span class=" font22boldmarginright30">  Price </span></td> ' +
+                '         <td><span class=" font22boldmarginright30">   CF</span></td> ' +
+                '     </tr> ';
 
             var total_estimation = 0;
             $(maindivElement).find("div.divProductItems").each(function (e) {
