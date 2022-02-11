@@ -132,6 +132,9 @@
             });
             $(".totalcostAzure").html(parseFloat(sumAzure).toFixed(2));
 
+            // Getting total PF values
+            $("div.divCFTotal").each(function () { });
+
             var sumAws = 0;
             $('.totalpriceValAws').each(function () {
                 sumAws += parseFloat($(this).text());  // Or this.innerHTML, this.innerText
@@ -365,19 +368,27 @@
             var tableEndContent = '  </table>  </div> ';
             var rData = '';
 
-
+            var total_estimation = 0;
             $(maindivElement).find("div.divProductItems").each(function (e) {
                 var instanceCount = $(this).find("input.spinbutton").val();
                 if (instanceCount > 0) {
                     var productName = $(this).find("div.imageDescription").html();
-                    var tp = $(this).find("span.totalpriceVal").html();
+                   // var tp = $(this).find("span.totalpriceVal").html();
+                   // var cpt = $(this).find("div.divCFTotal").html();
 
+                    var unitPrice = $(this).find("span.priceVal").html().trim();
+                    var totalPrice = parseFloat(unitPrice * instanceCount).toFixed(2);
+                    total_estimation += parseFloat(totalPrice);
+
+                    var cf = $(this).find("div.divCF").html().trim();
+                    var totalCf = parseFloat(instanceCount * cf).toFixed(2);
+                   
                     rowData += instanceCount + " - " + productName + "~*";
-
                     rData += '      <tr> ' +
                         '          <td><span class="font22boldmarginright30">' + instanceCount + '</span></td> ' +
                         '         <td> <span class="font22boldmarginright30">' + productName + ' </span> </td> ' +
-                        '         <td><span class="font22boldmarginright30">  $ ' + tp + '</span></td> ' +
+                        '         <td><span class="total_estimation font22boldmarginright30">  $ ' + totalPrice + '</span></td> ' +
+                        '         <td><span class="total_cf font22boldmarginright30">   ' + totalCf + '</span></td> ' +
                         '     </tr> ';
                 }
 
@@ -387,6 +398,16 @@
             tblstartContent += tableEndContent;
 
             $(maindivElement).find("div.estimateSummary").append(tblstartContent);
+
+            $(".totalcostAzure").html(parseFloat(total_estimation).toFixed(2));
+
+            // Calculate total CF
+            var total_cf = 0;
+            $('.total_cf').each(function () {
+                total_cf += parseFloat($(this).text());
+            });
+            $(".totalCF_value").html(parseFloat(total_cf).toFixed(2));
+
         }
 
         $(".addWorkItemIT").click(function (e) {
@@ -531,9 +552,10 @@
             </div>
             <div class="text-center">
                 <span class="costInfo">Total: </span><span class="priceText margin-left20 text-black-50">$</span><span class="totalcostAzure priceText margin-right20 text-black-50 font-weight-bold">152.57</span>
+                <span class="">Total CF: </span><span class="totalCF_value priceText margin-right20 text-black-50 font-weight-bold"></span>
             </div>
             <div class="text-center cfclass">
-                <span class="cfTotalPercentage "></span>
+                <span class="cfTotalPercentage ">120</span>
             </div>
         </div>
         <div class="text-right" style=" cursor: pointer;">
