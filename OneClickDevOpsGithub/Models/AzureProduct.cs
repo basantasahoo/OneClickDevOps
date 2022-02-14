@@ -15,4 +15,23 @@ namespace OneClickDevOpsGithub.Models
         public decimal CF { get; set; }
 
     }
+
+    public class CarbonFootPrintData
+    {
+        public string DataCenter { get; set; }
+        public decimal ConversionRate { get; set; }
+        public decimal PUE { get; set; }
+        public decimal KWH { get; set; }
+    }
+
+    public class resourceInstance
+    {
+        public string ResourceName { get; set; }
+        public int Instance { get; set; }
+
+        public decimal TotalCF { get; set; }
+
+        public decimal TotalCO2 { get; set; }
+    }
+
 }

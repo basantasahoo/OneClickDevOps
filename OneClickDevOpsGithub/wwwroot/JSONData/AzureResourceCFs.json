@@ -1,0 +1,23 @@
+[
+  {
+    "ProductName": "VM",
+    "UnitPrice": "152.57",
+    "CF": ".75"
+  },
+  {
+    "ProductName": "App",
+    "UnitPrice": "54.75",
+    "CF": ".7"
+  },
+  {
+    "ProductName": "AD",
+    "UnitPrice": "23.36",
+    "CF": ".65"
+  },
+  {
+    "ProductName": "AZSQL",
+    "UnitPrice": "23.36",
+    "CF": ".6"
+
+  }
+]

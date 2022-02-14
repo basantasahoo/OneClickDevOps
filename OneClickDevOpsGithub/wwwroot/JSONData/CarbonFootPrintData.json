@@ -1,0 +1,27 @@
+[
+  {
+    "DataCenter": "US",
+    "ConversionRate": "0.28",
+    "PUE": "1.2",
+    "KWH": "50"
+  },
+  {
+    "DataCenter": "Europe",
+    "ConversionRate": "0.28",
+    "PUE": "1.9",
+    "KWH": "50"
+  },
+  {
+    "DataCenter": "ASIA",
+    "ConversionRate": "0.28",
+    "PUE": "1.2",
+    "KWH": "50"
+  },
+  {
+    "DataCenter": "AUS",
+    "ConversionRate": "0.28",
+    "PUE": "1.2",
+    "KWH": "50"
+
+  }
+]

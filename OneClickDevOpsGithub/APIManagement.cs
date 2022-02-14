@@ -49,7 +49,112 @@ namespace OneClickDevOpsGithub
 
         #endregion
 
+        #region private Methods
+
+
+        private string GetJsonResult(string path)
+        {
+            // Read From JSON File/ 
+            return  System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + path);
+        }
+
+        private List<CarbonFootPrintData> GetDataCenterDetails()
+        {
+            List<CarbonFootPrintData> cfData = new List<CarbonFootPrintData>();
+            string fullapath = string.Empty;
+            string jsonResult = string.Empty;
+            // Get the Full Path
+            fullapath =  @"\wwwroot\JSONData\CarbonFootPrintData.json";
+
+            // Read From JSON File/ 
+            jsonResult = System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + fullapath);
+
+            // Deserialize the Response JSON data to ProjectList.
+            cfData = JsonConvert.DeserializeObject<List<CarbonFootPrintData>>(jsonResult);
+            return cfData;
+        }
+
+        private List<AzureProduct> GetAzureResourceDetails()
+        {
+            List<AzureProduct> cfData = new List<AzureProduct>();
+            string fullapath = string.Empty;
+            string jsonResult = string.Empty;
+            // Get the Full Path
+            fullapath =  @"\wwwroot\JSONData\AzureResourceCFs.json" ;
+
+            // Read From JSON File/ 
+            jsonResult = System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + fullapath);
+
+            // Deserialize the Response JSON data to ProjectList.
+            cfData = JsonConvert.DeserializeObject<List<AzureProduct>>(jsonResult);
+            return cfData;
+        }
+
+        #endregion
+
         #region Public Methods
+
+        [HttpGet]
+        [Route("api/v1/GetCF")]
+        public string GetCarbonFootPrint(string dataCenter, string resourceInputs)
+        {
+            decimal finalCO2 = default(decimal);
+
+            // Get Data Center Details from Datcenter JSON
+            List <CarbonFootPrintData> datacenterDetails = GetDataCenterDetails();
+            var d_data = datacenterDetails.Find(d => d.DataCenter == dataCenter);
+
+            // Get Resource Data from Resource JSON
+            List<AzureProduct> resourceData = GetAzureResourceDetails();
+
+            //Split Resource Details from query String
+            List<string> splitData = resourceInputs.Split(',',StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<resourceInstance> resourceList = new List<resourceInstance>();
+            List<string> errorData = new List<string>();
+            splitData.ForEach(d => {
+
+                //Split data into resourceName and Instance 
+                var resource = d.Split('-', StringSplitOptions.RemoveEmptyEntries)[0];
+                var instance_data = d.Split('-', StringSplitOptions.RemoveEmptyEntries)[1];
+
+                // Verify Instance is Valid
+                int instance = default(int);
+                if (int.TryParse(instance_data.Trim(),out instance))
+                {
+                    //Verify Resource name is valid 
+                    AzureProduct r_data = resourceData.Find(x => x.ProductName.ToLower() == resource.Trim().ToLower());
+                    if (r_data != null)
+                    {
+                        decimal cf = r_data.CF;
+                        resourceList.Add(new resourceInstance() { ResourceName = resource, Instance = instance, TotalCO2 = d_data.ConversionRate * d_data.PUE * d_data.KWH * cf * instance });
+                    }
+                    else
+                    {
+                        errorData.Add("Invalid Resource: " + resource + " in: " + d);
+                    }
+                }
+                else
+                {
+                    errorData.Add("Invalid value: " + instance_data + " in: "+ d);
+                }
+                
+            });
+
+            //Calculate Average CF for multiple resourcesz
+            int total_instance = resourceList.Sum(d => d.Instance);
+            decimal total_cf = resourceList.Sum(d => d.TotalCO2);
+            decimal avg_cf = total_cf / resourceList.Count();
+
+            // Calculate CO2 and return the client.
+            finalCO2 = total_cf;
+
+            if (errorData.Any())
+            {
+                return string.Join("  ~  ", errorData);
+            }
+
+            return finalCO2.ToString();
+        }
 
         [HttpPost]
         [Route("api/v1/TestPostMethod")]
