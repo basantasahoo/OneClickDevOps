@@ -135,7 +135,7 @@ namespace OneClickDevOpsGithub
                 }
                 else
                 {
-                    errorData.Add("Invalid value: " + instance_data + " in: "+ d);
+                    errorData.Add("Invalid Input: " + instance_data + " in: "+ d);
                 }
                 
             });
