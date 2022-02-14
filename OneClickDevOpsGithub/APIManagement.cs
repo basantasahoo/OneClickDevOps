@@ -143,7 +143,7 @@ namespace OneClickDevOpsGithub
             //Calculate Average CF for multiple resourcesz
             int total_instance = resourceList.Sum(d => d.Instance);
             decimal total_cf = resourceList.Sum(d => d.TotalCO2);
-            decimal avg_cf = total_cf / resourceList.Count();
+            //decimal avg_cf = total_cf / resourceList.Count();
 
             // Calculate CO2 and return the client.
             finalCO2 = total_cf;
