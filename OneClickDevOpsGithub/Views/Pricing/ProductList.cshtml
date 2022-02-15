@@ -42,6 +42,28 @@
             $(".divTab").hide();
         }
 
+        var datacenterDetails;
+       
+
+        function GetDataCenterDetails() {
+            // Load Products as per selected checkbox
+            var url = hostname + "/api/v1/GetDataCenteretails";
+            jQuery.ajax({
+                url: url,
+                type: "get",
+                contentType: "application/json",
+                success: function (result, status, xhr) {
+
+                    if (result.length > 0) {
+                        datacenterDetails = result;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr)
+                }
+            });
+        }
+
         function LoadProductList(source) {
             // Load Products as per selected checkbox
             var url = hostname + "/api/v1/GetProductList?source=" + source;
@@ -99,7 +121,7 @@
                     '    <img class="img-product" src=' + imageSrc + '>' +
                     '    <div>' +
                     '        <div class="imageDescription">' + productName + '</div> ' +
-                    '       <div class="productDescription"> ' + prodDesc + '</div>' +
+                    '       <div class="productDescription"> ' + '' + '</div>' +
                     '   </div>' +
                     '  </div> ' +
                     '  <div class="productdetails">' + prodDetails + '</div> ' +
@@ -246,6 +268,7 @@
         $('.azureChkbox').change(function () {
             if (this.checked) {
                 // Load Data for selected Options
+              
                 LoadProductList($(this).val());
             }
             else {
@@ -364,7 +387,7 @@
             // Add into Arrray to display in the Summary
             var summaryElement;
 
-            var tblstartContent = '<div class="estimateSummaryItem">   <table style="border:1px solid black">';
+            var tblstartContent = '<div class="estimateSummaryItem">   <table style="border:1px solid black; text-align:center">';
             var tableEndContent = '  </table>  </div> ';
             var rData = '';
             rData += '      <tr style="border:1px solid black"> ' +
@@ -375,6 +398,7 @@
                 '     </tr> ';
 
             var total_estimation = 0;
+            var d_data = datacenterDetails.filter(d => d.dataCenter == 'US')[0];
             $(maindivElement).find("div.divProductItems").each(function (e) {
                 var instanceCount = $(this).find("input.spinbutton").val();
                 if (instanceCount > 0) {
@@ -387,7 +411,8 @@
                     total_estimation += parseFloat(totalPrice);
 
                     var cf = $(this).find("div.divCF").html().trim();
-                    var totalCf = parseFloat(instanceCount * cf).toFixed(2);
+                    //var totalCf = parseFloat(instanceCount * cf).toFixed(2);
+                    var totalCf = parseFloat(d_data.conversionRate * d_data.pue * d_data.kwh * cf * instanceCount).toFixed(2);
                    
                     rowData += instanceCount + " - " + productName + "~*";
                     rData += '      <tr> ' +
@@ -494,6 +519,8 @@
         // No default Tab Event
         //registerTabEvents();
         registerModalPopup();
+
+        GetDataCenterDetails();
 
     });
 </script>

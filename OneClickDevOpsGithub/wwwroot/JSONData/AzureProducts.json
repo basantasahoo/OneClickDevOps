@@ -5,7 +5,7 @@
     "Description": "Provision Windows and Linux virtual machines in seconds",
     "Details": "2 vCPUs, 8 GB RAM, 5 GB outbound data transfer, 30 GB hard drive",
     "UnitPrice": "152.57",
-    "CF": "3.5"
+    "CF": ".75"
   },
   {
     "ProductName": "App Service",
@@ -13,7 +13,7 @@
     "Description": "Provision Windows and Linux virtual machines in seconds",
     "Details": "Basic Tier; 1 B1 (1 Core(s), 1.75 GB RAM, 10 GB Storage) x 730 Hours; Windows OS",
     "UnitPrice": "54.75",
-    "CF": "3"
+    "CF": ".7"
   },
   {
     "ProductName": "Active Directory",
@@ -21,7 +21,7 @@
     "Description": "Includes 500K Directory Objects, SSO for SaaS Apps 10 Apps/User,",
     "Details": "1 users Premium P1, 1 users Premium P2, Enterprise tier, 730 directory objects, User forest hours {5, Resource forest hours {7}.",
     "UnitPrice": "23.36",
-    "CF": "3.5"
+    "CF": ".65"
   },
   {
     "ProductName": "Azure SQL Database",
@@ -29,7 +29,7 @@
     "Description": "Includes 500K Directory Objects, SSO for SaaS Apps 10 Apps/User,",
     "Details": "Single Database, vCore, RA-GRS Backup Storage, General Purpose, Provisioned, Standard-series (Gen 5), Local Redundancy, 1 - 8 vCore instance(s) x 730 Hours, 32 GB Storage, 0 GB Backup Storage",
     "UnitPrice": "23.36",
-    "CF": "4"
+    "CF": ".6"
 
   }
 ]

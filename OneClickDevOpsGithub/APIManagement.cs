@@ -58,21 +58,7 @@ namespace OneClickDevOpsGithub
             return  System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + path);
         }
 
-        private List<CarbonFootPrintData> GetDataCenterDetails()
-        {
-            List<CarbonFootPrintData> cfData = new List<CarbonFootPrintData>();
-            string fullapath = string.Empty;
-            string jsonResult = string.Empty;
-            // Get the Full Path
-            fullapath =  @"\wwwroot\JSONData\CarbonFootPrintData.json";
-
-            // Read From JSON File/ 
-            jsonResult = System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + fullapath);
-
-            // Deserialize the Response JSON data to ProjectList.
-            cfData = JsonConvert.DeserializeObject<List<CarbonFootPrintData>>(jsonResult);
-            return cfData;
-        }
+       
 
         private List<AzureProduct> GetAzureResourceDetails()
         {
@@ -93,6 +79,24 @@ namespace OneClickDevOpsGithub
         #endregion
 
         #region Public Methods
+
+        [HttpGet]
+        [Route("api/v1/GetDataCenteretails")]
+        public List<CarbonFootPrintData> GetDataCenterDetails()
+        {
+            List<CarbonFootPrintData> cfData = new List<CarbonFootPrintData>();
+            string fullapath = string.Empty;
+            string jsonResult = string.Empty;
+            // Get the Full Path
+            fullapath = @"\wwwroot\JSONData\CarbonFootPrintData.json";
+
+            // Read From JSON File/ 
+            jsonResult = System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + fullapath);
+
+            // Deserialize the Response JSON data to ProjectList.
+            cfData = JsonConvert.DeserializeObject<List<CarbonFootPrintData>>(jsonResult);
+            return cfData;
+        }
 
         [HttpGet]
         [Route("api/v1/GetCF")]
@@ -126,7 +130,11 @@ namespace OneClickDevOpsGithub
                     if (r_data != null)
                     {
                         decimal cf = r_data.CF;
-                        resourceList.Add(new resourceInstance() { ResourceName = resource, Instance = instance, TotalCO2 = d_data.ConversionRate * d_data.PUE * d_data.KWH * cf * instance });
+                        resourceList.Add(new resourceInstance() { 
+                                ResourceName = resource, 
+                                Instance = instance, 
+                                TotalCO2 = d_data.ConversionRate * d_data.PUE * d_data.KWH * cf * instance 
+                        });
                     }
                     else
                     {
