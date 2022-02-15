@@ -284,7 +284,7 @@ body {
 }
 
 .divestimate {
-    width: 45%;
+    width: 50%;
     /*margin-top: 35px;*/
 }
 
@@ -361,13 +361,13 @@ body {
 }
 
 .priceText {
-    font-size: 22px;
+    font-size: 15px;
     font-weight: bolder;
 }
 
 .costInfo {
     margin-left: 10px;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
     font-style: italic;
 }
@@ -420,7 +420,7 @@ body {
     margin-right: 10px;
     height: 35px;
     text-align: center;
-    font-size: 22px;
+    font-size: 15px;
     /*background-color: rgba(0,120,212,1);*/
     /*color: white;*/
     cursor: pointer;
@@ -458,7 +458,7 @@ body {
 }
 
 .font22boldmarginright30 {
-    font-size: 15px;
+    font-size: 10px;
     font-weight: bold;
     margin-right: 30px;
 }
