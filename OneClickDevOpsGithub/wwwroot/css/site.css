@@ -377,7 +377,7 @@ body {
 }
 
 .number-holder {
-    margin-top: 10px;
+    margin-top: 4px;
     margin-left: 30px;
 }
 
@@ -565,4 +565,7 @@ body {
 }
 .leftAlign {
     text-align: left;
+}
+.margin-top5{
+    margin-top:5px;
 }
