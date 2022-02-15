@@ -284,7 +284,7 @@ body {
 }
 
 .divestimate {
-    width: 48%;
+    width: 45%;
     /*margin-top: 35px;*/
 }
 
@@ -361,7 +361,7 @@ body {
 }
 
 .priceText {
-    font-size: 30px;
+    font-size: 22px;
     font-weight: bolder;
 }
 
@@ -458,7 +458,7 @@ body {
 }
 
 .font22boldmarginright30 {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
     margin-right: 30px;
 }
