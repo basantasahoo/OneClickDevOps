@@ -368,10 +368,10 @@
             var tableEndContent = '  </table>  </div> ';
             var rData = '';
             rData += '      <tr style="border:1px solid black"> ' +
-                '          <td><span class="font22boldmarginright30">Sl No</span></td> ' +
-                '         <td> <span class="font22boldmarginright30">Product </span> </td> ' +
-                '         <td><span class=" font22boldmarginright30">  Price </span></td> ' +
-                '         <td><span class=" font22boldmarginright30">   CF</span></td> ' +
+                '          <td><span class="font22boldmarginright30">Count</span></td> ' +
+                '         <td> <span class="font22boldmarginright30">Resource </span> </td> ' +
+                '         <td><span class=" font22boldmarginright30">Price </span></td> ' +
+                '         <td><span class=" font22boldmarginright30">CF(KG CO2/Year)</span></td> ' +
                 '     </tr> ';
 
             var total_estimation = 0;
@@ -519,13 +519,13 @@
 
     <div id="divProductList" class="ProductList">
         <div class="product-search-container">
-            <input class="product-search" aria-label="Search products" placeholder="Search products" value="">
+            <input class="product-search" aria-label="Search products" placeholder="Search resource" value="">
             <button class="clear-search" aria-label="Clear search" type="submit" data-bi-an="body" data-bi-tn="clear-search">×</button>
         </div>
         <div class="">
             <div class="projectdivsection">
-                <div class="row-header"> Product List: </div>
-                <span class="spaninfo"> Select Product from the list to view the estimates</span>
+                <div class="row-header"> Resource List: </div>
+                <span class="spaninfo"> Select Resource from the list to view the estimates</span>
                 <div class="divProductListAzure height800auto"></div>
 
             </div>
@@ -537,7 +537,7 @@
         <div class="divEstimateHeader"> Your Estimate</div>
         <div class="projectdivsection">
             <div class="row-header">Estimate</div>
-            <span class="spaninfo"> Total estimation as per selected products</span>
+            <span class="spaninfo"> Total estimation as per selected resource</span>
             <div class="estimateSummary margin10">
                 <div class="estimateSummaryItem">
                     <table>
@@ -573,13 +573,13 @@
 <div class="divpagemaincontent inline-flex awsProductList">
     <div id="divProductList" class="ProductList">
         <div class="product-search-container">
-            <input class="product-search" aria-label="Search products" placeholder="Search products" value="">
+            <input class="product-search" aria-label="Search products" placeholder="Search resource" value="">
             <button class="clear-search" aria-label="Clear search" type="submit" data-bi-an="body" data-bi-tn="clear-search">×</button>
         </div>
         <div class="">
             <div class="projectdivsection">
-                <div class="row-header"> Product List: </div>
-                <span class="spaninfo"> Select Product from the list to view the estimates</span>
+                <div class="row-header"> Resource List: </div>
+                <span class="spaninfo"> Select resource from the list to view the estimates</span>
                 <div class="divProductListAWS height800auto"></div>
 
             </div>
