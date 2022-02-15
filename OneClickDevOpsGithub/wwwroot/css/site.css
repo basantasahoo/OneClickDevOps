@@ -245,6 +245,10 @@ body {
     margin-left: 50px;
 }
 
+.marginleft-100 {
+    margin-left: 100px;
+}
+
 .marginleft-10 {
     margin-left: 10px;
 }
@@ -327,7 +331,7 @@ body {
 }
 
 .imageDescription {
-    font-size: 24px;
+    font-size: 15px;
     font-weight: bold;
     margin-left: 30px;
     margin-top: 15px;
@@ -338,7 +342,7 @@ body {
 }
 
 .img-product {
-    height: 100px;
+    height: 50px;
 }
 
 .divproductimagecontainer {
@@ -346,14 +350,14 @@ body {
 }
 
 .productdetails {
-    font-size: 20px;
+    font-size: 14px;
     font-style: italic;
 }
 
 .divProductItems {
-    margin: 20px;
+    margin: 10px;
     border: 1px solid blue;
-    padding: 10px;
+    padding: 5px;
 }
 
 .inline-flex {
@@ -458,13 +462,13 @@ body {
 }
 
 .font22boldmarginright30 {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: bold;
-    margin-right: 30px;
+    margin-right: 35px;
 }
 
 .estimateSummaryItem {
-    margin-left: 20px;
+    margin-left: 10px;
 }
 .height800auto{
     max-height:800px;
@@ -558,4 +562,7 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.4);
+}
+.leftAlign {
+    text-align: left;
 }

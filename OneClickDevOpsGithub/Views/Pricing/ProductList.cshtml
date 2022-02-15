@@ -125,7 +125,7 @@
                     '   </div>' +
                     '  </div> ' +
                     '  <div class="productdetails">' + prodDetails + '</div> ' +
-                    '  <div class="pricediv inline-flex margin-top30"> ' +
+                    '  <div class="pricediv inline-flex"> ' +
                     '      <div class="divpriceInfo"> ' +
                     '         <span class="costInfo">Per Instance</span> ' +
                     '         <span class="priceText margin-left20">$</span><span class="priceVal priceText margin-right20">' + prodPrice + '</span> ' +
@@ -391,7 +391,7 @@
             var tableEndContent = '  </table>  </div> ';
             var rData = '';
             rData += '      <tr style="border:1px solid black"> ' +
-                '          <td><span class="font22boldmarginright30">Count</span></td> ' +
+                '          <td><span class="font22boldmarginright30 marginleft-10">Count</span></td> ' +
                 '         <td> <span class="font22boldmarginright30">Resource </span> </td> ' +
                 '         <td><span class=" font22boldmarginright30">Cost </span></td> ' +
                 '         <td><span class=" font22boldmarginright30">CF(KG CO2/Year)</span></td> ' +
@@ -417,7 +417,7 @@
                     rowData += instanceCount + " - " + productName + "~*";
                     rData += '      <tr> ' +
                         '          <td><span class="font22boldmarginright30">' + instanceCount + '</span></td> ' +
-                        '         <td> <span class="font22boldmarginright30">' + productName + ' </span> </td> ' +
+                        '         <td class="leftAlign"> <span class="font22boldmarginright30">' + productName + ' </span> </td> ' +
                         '         <td><span class="total_estimation font22boldmarginright30">  $ ' + totalPrice + '</span></td> ' +
                         '         <td><span class="total_cf font22boldmarginright30">   ' + totalCf + '</span></td> ' +
                         '     </tr> ';
@@ -529,7 +529,7 @@
 <div class="loadingdiv text-center loadingImage_pricing">
     <img src="~/AzureIcons/loader_spin.gif" style="width:154px; height:86px" />
 </div>
-<div class=" divSelectSource inline-flex " style="margin-left:31%; border:1px solid blue; padding:20px; margin-bottom:20px;">
+<div class=" divSelectSource inline-flex " style="margin-left:31%; border:1px solid blue; padding:20px; ">
     <div class="font-weight-bold"> Select Source </div>
     <div class="">
         <input type="checkbox" class="azureChkbox resourceCheckBox marginleft-50" name="sourceCheckbx" value="Azure" /> <span class="margin-left20 font22">Azure</span>
@@ -565,7 +565,7 @@
         <div class="projectdivsection">
             <div class="row-header">Estimate</div>
             <span class="spaninfo"> Total estimation as per selected resource</span>
-            <div class="estimateSummary margin10">
+            <div class="estimateSummary ">
                 <div class="estimateSummaryItem">
                     <table>
                         <tr>
@@ -583,7 +583,7 @@
                     <span class="priceText margin-left20 text-black-50" style="font-size:18px;"></span>
                 </div>
             </div>
-            <div class="text-center">
+            <div class="marginleft-100">
                 <span class="costInfo">Total: </span><span class="priceText margin-left20 text-black-50">$</span><span class="totalcostAzure priceText margin-right20 text-black-50 font-weight-bold">152.57</span>
                 <span class="costInfo">CF(KG CO2/Year): </span><span class="totalCF_value priceText margin-right20 text-black-50 font-weight-bold"></span>
             </div>
@@ -637,7 +637,7 @@
                     <span class="priceText margin-left20 text-black-50" style="font-size:18px;"></span>
                 </div>
             </div>
-            <div class="text-center">
+            <div class="marginleft-100">
                 <span class="costInfo">Total: </span><span class="priceText margin-left20 text-black-50">$</span><span class="totalcostAWS priceText margin-right20 text-black-50 font-weight-bold">152.57</span>
             </div>
 
