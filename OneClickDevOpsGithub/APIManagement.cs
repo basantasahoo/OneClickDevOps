@@ -33,6 +33,7 @@ namespace OneClickDevOpsGithub
         public const string Task4 = "Create CI /CD for the Application";
         public const string AZURESOURCE = "Azure";
         public const string AWSSOURCE = "AWS";
+        public const string CICD_CREATION_MESSAGE = "CI/CD Pipeline Creation ";
 
         #region Constructor
 
@@ -255,6 +256,13 @@ namespace OneClickDevOpsGithub
         public string CreateProjectPOST(string projectName, string description, string org, string pat1, string type, bool isexist, int numberOfTask)
         {
             return CreateProject(projectName, description, org, pat1, type, isexist, numberOfTask);
+        }
+
+        [HttpPost]
+        [Route("api/v1/CreateCICDPipeline")]
+        public string CreateCICD(string projectName, string org, string pat1, string type)
+        {
+            return CreateProject(projectName, CICD_CREATION_MESSAGE, org, pat1, type, false, 0);
         }
 
         [HttpPost]
