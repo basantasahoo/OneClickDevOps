@@ -71,10 +71,10 @@ steps:
    # BuildType: 'msbuild'
 
 
-- task: DotNetCoreCLI@2
-  displayName: 'Fortify SAST Scan'
-  inputs:
-    command: 'publish'
+#- task: DotNetCoreCLI@2
+#  displayName: 'Fortify SAST Scan'
+#  inputs:
+#    command: 'publish'
     
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
