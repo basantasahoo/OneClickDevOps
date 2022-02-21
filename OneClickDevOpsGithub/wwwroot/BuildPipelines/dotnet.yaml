@@ -93,3 +93,11 @@ steps:
     ArtifactName: 'packagefeed'
     publishLocation: 'Container'
     
+#- task: AzureRmWebAppDeployment@4
+#  displayName: 'Deploy to Azure App Service'
+#  inputs:
+#    ConnectionType: 'AzureRM'
+#    azureSubscription: '********'
+#    appType: 'webApp'
+#    WebAppName: '****'
+#    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
