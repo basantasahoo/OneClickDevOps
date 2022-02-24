@@ -59,8 +59,6 @@ namespace OneClickDevOpsGithub
             return  System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + path);
         }
 
-       
-
         private List<AzureProduct> GetAzureResourceDetails()
         {
             List<AzureProduct> cfData = new List<AzureProduct>();
@@ -80,6 +78,17 @@ namespace OneClickDevOpsGithub
         #endregion
 
         #region Public Methods
+
+
+        [HttpPost]
+        [Route("api/v1/TestPostMethod")]
+        public string TestPostMethod([FromBody] List<DevOpsProject> info)
+        {
+            string result = string.Empty;
+
+            result = string.Join(",", info.Select(d => d.ProjectName).ToList());
+            return result;
+        }
 
         [HttpGet]
         [Route("api/v1/GetDataCenteretails")]
@@ -165,13 +174,39 @@ namespace OneClickDevOpsGithub
             return finalCO2.ToString();
         }
 
+        /// <summary>
+        /// Create Bulk projects from JSON inputs, User must input Project Name, Description and Types to create Projects in DevOps
+        /// </summary>
+        /// <param name="info">JSON data as Input to create Projects</param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("api/v1/TestPostMethod")]
-        public string TestPostMethod(string projectName, string pat)
+        [Route("api/v1/CreateBulkProjects")]
+        public ValdationResult CreateBulkProjects([FromBody] List<DevOpsProject> listInfo, string org, string pat1)
         {
-            string result = string.Empty;
-            result = projectName + pat;
+            ValdationResult result = null;
+            List<string> projectUlrs = new List<string>();
+            List<string> errorList = new List<string>();
 
+            // Create New Projects as per Project Details.
+            listInfo.ForEach(d=> {
+
+                if (!string.IsNullOrEmpty(d.ProjectName) && !string.IsNullOrEmpty(d.Type))
+                {
+                    var projectUrl =  CreateProject(d.ProjectName, CICD_CREATION_MESSAGE, org, pat1, d.Type, false, 0);
+                    projectUlrs.Add(projectUrl);
+                }
+                else
+                {
+                    errorList.Add("Invalid ProjectName or ProjectType");
+                }
+            });
+
+            result = new ValdationResult()
+            {
+                Data = projectUlrs,
+                Errors = errorList
+            };
+            
             return result;
         }
 
@@ -481,7 +516,7 @@ namespace OneClickDevOpsGithub
 
         [HttpGet]
         [Route("api/v1/CheckAppServiceResponse")]
-        public async Task<bool> ChecAppService()
+        public async Task<bool> CheckAppService()
         {
             bool status = default(bool);
 

@@ -30,4 +30,10 @@ namespace OneClickDevOpsGithub.Models
         public int NumberOfTask { get; set; }
 
     }
+
+    public class ValdationResult
+    {
+        public object Data { get; set; }
+        public List<string> Errors { get; set; }
+    }
 }
